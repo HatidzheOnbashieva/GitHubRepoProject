@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">GitHubRepoProject</string>
+    <string name="icon">Profile icon</string>
+    <string name="tv_username">Username here</string>
+    <string name="repository_name">Repository name here</string>
+    <string name="search_fragment">Search Fragment</string>
+    <string name="date_created">Created on </string>
+    <string name="description">Description here</string>
+    <string name="language">Language</string>
+    <string name="menu_starred">Starred</string>
+    <string name="menu_search">Search</string>
+    <string name="menu_search_username">Search for a user...</string>
+    <string name="btn_repo">Repository URL</string>
 </resources>
