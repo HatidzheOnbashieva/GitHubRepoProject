@@ -3,10 +3,10 @@
     <item
         android:id="@+id/searchRepos"
         android:icon="@drawable/ic_search"
-        android:title="@string/menu_search"/>
+        android:title="@string/menu_search" />
 
     <item
         android:id="@+id/starredRepos"
         android:icon="@drawable/ic_filled_star"
-        android:title="@string/menu_starred"/>
+        android:title="@string/menu_starred" />
 </menu>

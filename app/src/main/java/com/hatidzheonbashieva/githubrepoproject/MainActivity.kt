@@ -1,7 +1,7 @@
 package com.hatidzheonbashieva.githubrepoproject
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.hatidzheonbashieva.githubrepoproject.databinding.ActivityMainBinding
 import com.hatidzheonbashieva.githubrepoproject.fragments.searchFragment.SearchFragment
@@ -13,23 +13,32 @@ class MainActivity : AppCompatActivity() {
         val viewBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
-        if(supportFragmentManager.fragments.isEmpty()) {
+
+        if (supportFragmentManager.fragments.isEmpty()) {
             replaceFragment(SearchFragment())
         }
 
         viewBinding.bottomNav.setOnItemSelectedListener {
-            when(it.itemId){
+
+            when (it.itemId) {
                 R.id.searchRepos -> replaceFragment(SearchFragment())
-                R.id.starredRepos -> replaceFragment(StarredFragment())
+                R.id.starredRepos -> {
+//                    if (supportFragmentManager.backStackEntryCount > 0) {
+//                        super.onBackPressed()
+//                    }
+
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, StarredFragment())
+                        .commit()
+                }
             }
             true
         }
     }
 
     private fun replaceFragment(fragment: Fragment) {
-            supportFragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
-                .commit()
+        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
+            .commit()
     }
-
 }
 

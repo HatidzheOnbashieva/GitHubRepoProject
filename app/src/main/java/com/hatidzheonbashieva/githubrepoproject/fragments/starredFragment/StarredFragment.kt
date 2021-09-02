@@ -37,9 +37,6 @@ class StarredFragment  : Fragment() {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 Toast.makeText(requireContext(), "Toast message from Starred Fragment", Toast.LENGTH_SHORT).show()
 
-                if (!searchView.isIconified()) {
-                    searchView.setIconified(true)
-                }
                 searchMenuItem.collapseActionView()
                 return false
             }
