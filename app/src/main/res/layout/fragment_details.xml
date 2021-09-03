@@ -110,8 +110,8 @@
             app:layout_constraintTop_toBottomOf="@id/description" />
 
         <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             app:layout_constraintStart_toEndOf="@id/repoName"
             app:layout_constraintBottom_toBottomOf="@id/repoName"
             app:layout_constraintTop_toTopOf="@id/repoName"
