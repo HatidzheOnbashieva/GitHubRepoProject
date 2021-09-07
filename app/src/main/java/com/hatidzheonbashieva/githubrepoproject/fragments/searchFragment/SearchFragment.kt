@@ -5,15 +5,15 @@ import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hatidzheonbashieva.githubrepoproject.R
 import com.hatidzheonbashieva.githubrepoproject.databinding.FragmentSearchBinding
+import com.hatidzheonbashieva.githubrepoproject.fragments.detailsFragment.DetailsFragment
 import com.hatidzheonbashieva.githubrepoproject.fragments.searchFragment.lists.SearchAdapter
-import com.hatidzheonbashieva.githubrepoproject.model.Repo
+import com.hatidzheonbashieva.githubrepoproject.model.Repos
 
 class SearchFragment : Fragment(){
 
@@ -40,25 +40,40 @@ class SearchFragment : Fragment(){
 
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.cancelJobs()
+    }
+
     private fun setUpAdapter(){
         viewBinding?.searchRecyclerView?.layoutManager = LinearLayoutManager(activity)
-        searchAdapter = SearchAdapter()
+        searchAdapter = SearchAdapter{ repoItem ->
+            goToDetailsFragment(repoItem)
+        }
         viewBinding?.searchRecyclerView?.adapter = searchAdapter
     }
 
-    private fun updateRepoList(repoList: List<Repo>){
-        searchAdapter.repos = repoList as ArrayList<Repo>
-        searchAdapter.notifyDataSetChanged()
+    private fun goToDetailsFragment(repoItem: Repos) {
+        val fragment = DetailsFragment()
+        val bundle = Bundle()
+        bundle.putInt("repoId", repoItem.id)
+        bundle.putString("repoName", repoItem.repoName)
+        bundle.putString("username", repoItem.users?.username)
+        bundle.putString("avatarUrl", repoItem.users?.avatarUrl)
+        bundle.putString("description", repoItem.description)
+        bundle.putString("language", repoItem.language)
+        bundle.putString("dateCreated", repoItem.dateCreated)
+        bundle.putString("url", repoItem.url)
+        fragment.arguments = bundle
 
+        val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragment_container, fragment).commit()
     }
 
-    private fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
-        observe(lifecycleOwner, object : Observer<T> {
-            override fun onChanged(t: T?) {
-                observer.onChanged(t)
-                removeObserver(this)
-            }
-        })
+    private fun updateRepoList(repoList: List<Repos>){
+        searchAdapter.repos = repoList as ArrayList<Repos>
+        searchAdapter.notifyDataSetChanged()
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -71,19 +86,21 @@ class SearchFragment : Fragment(){
 
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                //requireActivity().supportFragmentManager.beginTransaction().replace(R.id.fragment_container, DetailsFragment()).commit()
-                viewModel.setUsername(query)
-                viewModel.fetchData().observeOnce(requireActivity(), Observer<List<Repo>> { repos ->
-                    updateRepoList(repos)
+            override fun onQueryTextSubmit(query: String): Boolean {
+                viewModel.setUsername(username = query)
+
+                viewModel.userRepoList.observe(requireActivity(), Observer{
+                    println(it) //delete this one later
+                    updateRepoList(it)
                 })
+
+
                 searchMenuItem.collapseActionView()
                 return false
             }
 
-            override fun onQueryTextChange(newText: String?): Boolean {
-                //viewModel.setUsername(newText)
-                return false
+            override fun onQueryTextChange(newText: String): Boolean {
+                return true
             }
 
         })

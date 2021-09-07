@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 
-data class Owner(
+data class Owners(
     @SerializedName("login") var _username: String?,
     @SerializedName("avatar_url") var _avatarUrl: String?
 ) : Serializable {

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.hatidzheonbashieva.githubrepoproject.databinding.FragmentDetailsBinding
+import com.squareup.picasso.Picasso
 
 class DetailsFragment : Fragment() {
 
@@ -22,6 +23,27 @@ class DetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        var repoId: Int = this.requireArguments().getInt("repoId")
+        var repoName: String? = this.requireArguments().getString("repoName")
+        var username:String? = this.requireArguments().getString("username")
+        var avatarUrl: String? = this.requireArguments().getString("avatarUrl")
+        var description:String? = this.requireArguments().getString("description")
+        var language: String? = this.requireArguments().getString("language")
+        var dateCreated:String? = this.requireArguments().getString("dateCreated")
+        var url:String? = this.requireArguments().getString("url")
+
+
+        Picasso.get().load(avatarUrl).into(viewBinding?.profileImage)
+        viewBinding?.username?.text = username
+        viewBinding?.repoName?.text = repoName
+        viewBinding?.description?.text = description
+        viewBinding?.language?.text = language
+        viewBinding?.dateCreated?.text = dateCreated
+        viewBinding?.url?.setOnClickListener{
+            //follow the url
+        }
+
 
 
       }

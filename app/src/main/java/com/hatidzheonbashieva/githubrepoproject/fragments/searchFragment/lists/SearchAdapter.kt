@@ -4,11 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.hatidzheonbashieva.githubrepoproject.databinding.SearchItemBinding
-import com.hatidzheonbashieva.githubrepoproject.model.Repo
+import com.hatidzheonbashieva.githubrepoproject.model.Repos
 
-class SearchAdapter : RecyclerView.Adapter<SearchViewHolder>(){
+class SearchAdapter(var onRowClick: (Repos) -> Unit) : RecyclerView.Adapter<SearchViewHolder>(){
 
-    var repos: ArrayList<Repo> = arrayListOf()
+    var repos: ArrayList<Repos> = arrayListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
         val viewBinding = SearchItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -18,7 +18,7 @@ class SearchAdapter : RecyclerView.Adapter<SearchViewHolder>(){
 
     override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
         val repoData = repos[position]
-        holder.setUserData(repoData)
+        holder.setUserData(repoData, onRowClick)
     }
 
     override fun getItemCount(): Int {
