@@ -15,11 +15,10 @@ class SearchViewModel : ViewModel() {
         SearchRepository.getUserRepos(it)
     }
 
-    fun setUsername(username: String){
-        val update = username
-        if(_username.value == update){
-            return
-        }
+    fun setUsername(username: String) {
+//        if (_username.value == username) {
+//            return
+//        }
         _username.value = username
     }
 

@@ -5,12 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
+import com.hatidzheonbashieva.githubrepoproject.R
 import com.hatidzheonbashieva.githubrepoproject.databinding.FragmentDetailsBinding
+import com.hatidzheonbashieva.githubrepoproject.fragments.searchFragment.SearchFragment
 import com.squareup.picasso.Picasso
 
 class DetailsFragment : Fragment() {
 
     private var viewBinding: FragmentDetailsBinding? = null
+    private var favouriteFlag: Boolean = false
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -18,6 +23,7 @@ class DetailsFragment : Fragment() {
     ): View? {
 
         viewBinding = FragmentDetailsBinding.inflate(layoutInflater, container, false)
+
         return viewBinding?.root
     }
 
@@ -43,8 +49,30 @@ class DetailsFragment : Fragment() {
         viewBinding?.url?.setOnClickListener{
             //follow the url
         }
-
-
+        goBack()
+        saveDataToDb()
 
       }
+
+
+    private fun goBack(){
+        viewBinding?.back?.setOnClickListener{
+//            val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
+//            transaction.replace(R.id.fragment_container, SearchFragment()).commit()
+            parentFragmentManager.popBackStack()
+        }
+    }
+
+    private fun saveDataToDb(){
+        viewBinding?.favourite?.setOnClickListener{
+
+            favouriteFlag = if(favouriteFlag){
+                viewBinding?.favourite?.setImageResource(R.drawable.ic_star_no_fill)
+                false
+            } else{
+                viewBinding?.favourite?.setImageResource(R.drawable.ic_filled_star)
+                true
+            }
+        }
+    }
 }

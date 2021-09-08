@@ -12,6 +12,16 @@
         android:layout_height="wrap_content">
 
         <ImageView
+            android:id="@+id/back"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_arrow_back"
+            android:layout_marginTop="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <ImageView
+            android:id="@+id/favourite"
             android:layout_width="50dp"
             android:layout_height="40dp"
             android:src="@drawable/ic_star_no_fill"
@@ -80,8 +90,8 @@
             android:text="@string/description"
             android:textColor="@color/white"
             android:textSize="20sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/repoName"
+            app:layout_constraintStart_toStartOf="@id/repoName"
             app:layout_constraintTop_toBottomOf="@id/repoName" />
 
         <TextView
@@ -92,9 +102,9 @@
             android:text="@string/language"
             android:textColor="@color/white"
             android:textSize="15sp"
-            app:layout_constraintEnd_toStartOf="@id/dateCreated"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/description" />
+            app:layout_constraintStart_toStartOf="@id/description"
+            app:layout_constraintTop_toBottomOf="@id/description"
+            app:layout_constraintEnd_toEndOf="@id/description"/>
 
         <TextView
             android:id="@+id/dateCreated"
@@ -104,9 +114,9 @@
             android:text="@string/date_created"
             android:textColor="@color/white"
             android:textSize="15sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/language"
-            app:layout_constraintTop_toBottomOf="@id/description" />
+            app:layout_constraintEnd_toEndOf="@id/language"
+            app:layout_constraintStart_toStartOf="@id/language"
+            app:layout_constraintTop_toBottomOf="@id/language"/>
 
         <ImageView
             android:id="@+id/url"

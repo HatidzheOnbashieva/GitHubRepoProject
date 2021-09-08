@@ -1,5 +1,6 @@
 package com.hatidzheonbashieva.githubrepoproject.fragments.searchFragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
@@ -15,11 +16,12 @@ import com.hatidzheonbashieva.githubrepoproject.fragments.detailsFragment.Detail
 import com.hatidzheonbashieva.githubrepoproject.fragments.searchFragment.lists.SearchAdapter
 import com.hatidzheonbashieva.githubrepoproject.model.Repos
 
-class SearchFragment : Fragment(){
+class SearchFragment : Fragment() {
 
     private var viewBinding: FragmentSearchBinding? = null
     private val viewModel: SearchViewModel by viewModels()
     private lateinit var searchAdapter: SearchAdapter
+    private var newUsername: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,9 +47,9 @@ class SearchFragment : Fragment(){
         viewModel.cancelJobs()
     }
 
-    private fun setUpAdapter(){
+    private fun setUpAdapter() {
         viewBinding?.searchRecyclerView?.layoutManager = LinearLayoutManager(activity)
-        searchAdapter = SearchAdapter{ repoItem ->
+        searchAdapter = SearchAdapter { repoItem ->
             goToDetailsFragment(repoItem)
         }
         viewBinding?.searchRecyclerView?.adapter = searchAdapter
@@ -67,10 +69,13 @@ class SearchFragment : Fragment(){
         fragment.arguments = bundle
 
         val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, fragment).commit()
+        transaction.replace(R.id.fragment_container, fragment).addToBackStack("searchFragment")
+            .commit()
     }
 
-    private fun updateRepoList(repoList: List<Repos>){
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun updateRepoList(repoList: List<Repos>) {
         searchAdapter.repos = repoList as ArrayList<Repos>
         searchAdapter.notifyDataSetChanged()
 
@@ -79,7 +84,7 @@ class SearchFragment : Fragment(){
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_search, menu)
 
-        val searchMenuItem = menu?.findItem(R.id.searchRepos)
+        val searchMenuItem = menu.findItem(R.id.searchRepos)
         val searchView = searchMenuItem?.actionView as SearchView
 
         searchView.queryHint = "Enter a username..."
@@ -87,23 +92,34 @@ class SearchFragment : Fragment(){
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
-                viewModel.setUsername(username = query)
-
-                viewModel.userRepoList.observe(requireActivity(), Observer{
-                    println(it) //delete this one later
-                    updateRepoList(it)
-                })
-
-
+                newUsername = query.replace(" ", "")
                 searchMenuItem.collapseActionView()
+                call()
                 return false
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
-                return true
+                return false
             }
 
         })
     }
 
+
+    private fun call() {
+        viewModel.setUsername(username = newUsername)
+
+        viewModel.userRepoList.observe(requireActivity(), Observer {
+            if (it.isNotEmpty()) {
+                println(it) //delete this one later
+                viewBinding?.errorText?.visibility = View.INVISIBLE
+                viewBinding?.searchRecyclerView?.visibility = View.VISIBLE
+                updateRepoList(it)
+            } else {
+                viewBinding?.searchRecyclerView?.visibility = View.INVISIBLE
+                viewBinding?.errorText?.visibility = View.VISIBLE
+                viewBinding?.errorText?.text = "There is no user with such username!"
+            }
+        })
+    }
 }
