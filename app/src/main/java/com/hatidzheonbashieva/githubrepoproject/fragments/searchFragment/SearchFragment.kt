@@ -23,6 +23,9 @@ class SearchFragment : Fragment() {
     private lateinit var searchAdapter: SearchAdapter
     private var newUsername: String = ""
 
+    companion object{
+        private var ERRORTEXT = "There is no user with such username!"
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -40,6 +43,19 @@ class SearchFragment : Fragment() {
         (activity as AppCompatActivity).setSupportActionBar(viewBinding?.toolbar)
         setHasOptionsMenu(true)
 
+        //viewModel.getUsername()
+
+        viewModel.userRepoList.observe(requireActivity(), Observer {
+            if (it.isNotEmpty()) {
+                viewBinding?.errorText?.visibility = View.INVISIBLE
+                viewBinding?.searchRecyclerView?.visibility = View.VISIBLE
+                updateRepoList(it)
+            } else {
+                viewBinding?.searchRecyclerView?.visibility = View.INVISIBLE
+                viewBinding?.errorText?.visibility = View.VISIBLE
+                viewBinding?.errorText?.text = ERRORTEXT
+            }
+        })
     }
 
     override fun onDestroyView() {
@@ -105,7 +121,6 @@ class SearchFragment : Fragment() {
         })
     }
 
-
     private fun call() {
         viewModel.setUsername(username = newUsername)
 
@@ -118,7 +133,7 @@ class SearchFragment : Fragment() {
             } else {
                 viewBinding?.searchRecyclerView?.visibility = View.INVISIBLE
                 viewBinding?.errorText?.visibility = View.VISIBLE
-                viewBinding?.errorText?.text = "There is no user with such username!"
+                viewBinding?.errorText?.text = ERRORTEXT
             }
         })
     }

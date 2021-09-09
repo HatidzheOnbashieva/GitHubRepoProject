@@ -9,7 +9,7 @@ data class Repos(
     @SerializedName("description") var _description: String?,
     @SerializedName("language") var _language: String?,
     @SerializedName("created_at") var _dateCreated: String?,
-    @SerializedName("url") var _repoUrl: String?
+    @SerializedName("html_url") var _repoUrl: String?
 ){
 
     val id

@@ -1,9 +1,6 @@
 package com.hatidzheonbashieva.githubrepoproject.fragments.searchFragment
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.hatidzheonbashieva.githubrepoproject.model.Repos
 import com.hatidzheonbashieva.githubrepoproject.searchRepository.SearchRepository
 
@@ -21,6 +18,8 @@ class SearchViewModel : ViewModel() {
 //        }
         _username.value = username
     }
+
+    fun getUsername() = _username.value
 
     fun cancelJobs(){
         SearchRepository.cancelJobs()

@@ -1,20 +1,25 @@
 package com.hatidzheonbashieva.githubrepoproject.fragments.detailsFragment
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import com.hatidzheonbashieva.githubrepoproject.R
 import com.hatidzheonbashieva.githubrepoproject.databinding.FragmentDetailsBinding
-import com.hatidzheonbashieva.githubrepoproject.fragments.searchFragment.SearchFragment
+import com.hatidzheonbashieva.githubrepoproject.model.Owners
+import com.hatidzheonbashieva.githubrepoproject.model.Repos
 import com.squareup.picasso.Picasso
 
 class DetailsFragment : Fragment() {
 
     private var viewBinding: FragmentDetailsBinding? = null
     private var favouriteFlag: Boolean = false
+    private lateinit var viewModel: DetailsViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,10 +52,36 @@ class DetailsFragment : Fragment() {
         viewBinding?.language?.text = language
         viewBinding?.dateCreated?.text = dateCreated
         viewBinding?.url?.setOnClickListener{
-            //follow the url
+            val followUrl = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(followUrl)
         }
+
+        viewModel = ViewModelProvider(this).get(DetailsViewModel::class.java)
+        favouriteFlag = true
+
         goBack()
-        saveDataToDb()
+
+        viewBinding?.favourite?.setOnClickListener{
+            val user = Owners(username, avatarUrl)
+            val repo = Repos (
+                repoId,
+                repoName,
+                user,
+                description,
+                language,
+                dateCreated,
+                url)
+
+            favouriteFlag = if(favouriteFlag){
+                //viewModel.removeRepo(repoId)
+                viewBinding?.favourite?.setImageResource(R.drawable.ic_star_no_fill)
+                false
+            } else{
+                viewModel.addRepo(repo)
+                viewBinding?.favourite?.setImageResource(R.drawable.ic_filled_star)
+                true
+            }
+        }
 
       }
 
@@ -60,19 +91,6 @@ class DetailsFragment : Fragment() {
 //            val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
 //            transaction.replace(R.id.fragment_container, SearchFragment()).commit()
             parentFragmentManager.popBackStack()
-        }
-    }
-
-    private fun saveDataToDb(){
-        viewBinding?.favourite?.setOnClickListener{
-
-            favouriteFlag = if(favouriteFlag){
-                viewBinding?.favourite?.setImageResource(R.drawable.ic_star_no_fill)
-                false
-            } else{
-                viewBinding?.favourite?.setImageResource(R.drawable.ic_filled_star)
-                true
-            }
         }
     }
 }
