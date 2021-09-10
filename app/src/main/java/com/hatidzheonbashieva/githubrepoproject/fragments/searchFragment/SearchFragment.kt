@@ -23,9 +23,10 @@ class SearchFragment : Fragment() {
     private lateinit var searchAdapter: SearchAdapter
     private var newUsername: String = ""
 
-    companion object{
+    companion object {
         private var ERRORTEXT = "There is no user with such username!"
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -117,7 +118,6 @@ class SearchFragment : Fragment() {
             override fun onQueryTextChange(newText: String): Boolean {
                 return false
             }
-
         })
     }
 

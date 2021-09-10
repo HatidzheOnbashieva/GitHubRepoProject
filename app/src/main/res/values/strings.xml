@@ -11,4 +11,7 @@
     <string name="menu_search">Search</string>
     <string name="menu_search_username">Search for a user...</string>
     <string name="btn_repo">Repository URL</string>
+    <string name="backBtn">Go Back</string>
+    <string name="favouriteBtn">Save/Delete Repo</string>
+    <string name="followUrl">Follow Url</string>
 </resources>

@@ -22,15 +22,7 @@ class MainActivity : AppCompatActivity() {
 
             when (it.itemId) {
                 R.id.searchRepos -> replaceFragment(SearchFragment())
-                R.id.starredRepos -> {
-//                    if (supportFragmentManager.backStackEntryCount > 0) {
-//                        super.onBackPressed()
-//                    }
-
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, StarredFragment())
-                        .commit()
-                }
+                R.id.starredRepos -> replaceFragment(StarredFragment())
             }
             true
         }

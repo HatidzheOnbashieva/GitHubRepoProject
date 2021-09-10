@@ -8,20 +8,17 @@ class SearchViewModel : ViewModel() {
 
     private var _username: MutableLiveData<String> = MutableLiveData()
 
-    val userRepoList: LiveData<List<Repos>> = Transformations.switchMap(_username){
+    val userRepoList: LiveData<List<Repos>> = Transformations.switchMap(_username) {
         SearchRepository.getUserRepos(it)
     }
 
     fun setUsername(username: String) {
-//        if (_username.value == username) {
-//            return
-//        }
         _username.value = username
     }
 
     fun getUsername() = _username.value
 
-    fun cancelJobs(){
+    fun cancelJobs() {
         SearchRepository.cancelJobs()
     }
 

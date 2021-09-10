@@ -11,23 +11,19 @@ abstract class RepoDatabase : RoomDatabase() {
     abstract fun repoDao(): RepoDao
 
     companion object {
-        @Volatile
-        private var INSTANCE: RepoDatabase? = null
 
+        private var instance: RepoDatabase? = null
+
+        @Synchronized
         fun getRepoDatabase(context: Context): RepoDatabase {
-            val tempInstance = INSTANCE
-            if (tempInstance != null) {
-                return tempInstance
-            }
-            synchronized(this) { //everything inside the block will be protected from a concurrent execution of multiple threads?
-                val db = Room.databaseBuilder(
+            if (instance == null)
+                instance = Room.databaseBuilder(
                     context.applicationContext,
                     RepoDatabase::class.java,
                     "repositories.db"
                 ).build()
-                INSTANCE = db
-                return db
-            }
+
+            return instance as RepoDatabase
         }
     }
 }

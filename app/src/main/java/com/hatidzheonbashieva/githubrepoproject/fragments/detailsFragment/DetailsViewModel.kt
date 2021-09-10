@@ -2,27 +2,31 @@ package com.hatidzheonbashieva.githubrepoproject.fragments.detailsFragment
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import com.hatidzheonbashieva.githubrepoproject.database.RepoDatabase
-import com.hatidzheonbashieva.githubrepoproject.model.Repos
+import com.hatidzheonbashieva.githubrepoproject.database.RepoEntity
 import com.hatidzheonbashieva.githubrepoproject.searchRepository.StarredRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class DetailsViewModel : ViewModel() {
+class DetailsViewModel(application: Application) : AndroidViewModel(application) {
 
+    private val repository = StarredRepository.RepoRepository(application)
 
-    private lateinit var repository: StarredRepository.RepoRepository
-
-    fun init(application: Application){
-        val repoDao = RepoDatabase.getRepoDatabase(application).repoDao()
-        repository = StarredRepository.RepoRepository(repoDao)
+    fun addRepo(repo: RepoEntity) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.addRepo(repo)
+        }
     }
 
-    fun addRepo(repo: Repos) {
-        viewModelScope.launch(Dispatchers.IO){
-            repository.addRepo(repo)
+    fun getRepoId(repoId: Int): LiveData<Boolean> {
+        val response = repository.getRepoId(repoId)
+        return response
+    }
+
+    fun deleteRepoId(repoId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteRepo(repoId)
         }
     }
 }

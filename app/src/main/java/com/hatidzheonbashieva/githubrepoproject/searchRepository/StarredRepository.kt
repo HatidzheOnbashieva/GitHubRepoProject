@@ -1,21 +1,38 @@
 package com.hatidzheonbashieva.githubrepoproject.searchRepository
 
+import android.app.Application
 import androidx.lifecycle.LiveData
 import com.hatidzheonbashieva.githubrepoproject.database.RepoDao
-import com.hatidzheonbashieva.githubrepoproject.model.Repos
+import com.hatidzheonbashieva.githubrepoproject.database.RepoDatabase
+import com.hatidzheonbashieva.githubrepoproject.database.RepoEntity
 
 object StarredRepository {
 
-    class RepoRepository(private val repoDao: RepoDao){
+    class RepoRepository(application: Application) {
 
-//        val readRepos: LiveData<List<Repos>> = repoDao.getRepos()
+        private var repoDao: RepoDao
+        private var readAllRepos: LiveData<List<RepoEntity>>
 
-        fun getRepos() :LiveData<List<Repos>>{
-            return repoDao.getRepos()
+        private var database = RepoDatabase.getRepoDatabase(application)
+
+        init {
+            repoDao = database.repoDao()
+            readAllRepos = repoDao.getRepos()
         }
 
-        suspend fun addRepo(repo: Repos){
+        fun getAllRepos(): LiveData<List<RepoEntity>> = readAllRepos
+
+        fun getRepoId(repoID: Int): LiveData<Boolean> {
+            val response = repoDao.getRepoId(repoID)
+            return response
+        }
+
+        suspend fun addRepo(repo: RepoEntity) {
             repoDao.addRepo(repo)
+        }
+
+        suspend fun deleteRepo(repoId: Int) {
+            repoDao.deleteRepo(repoId)
         }
     }
 }

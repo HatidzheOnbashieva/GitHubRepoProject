@@ -17,7 +17,7 @@ data class Owners(
         get() = _avatarUrl ?: ""
 
     init {
-        this.username
-        this.avatarUrl
+        this._username
+        this._avatarUrl
     }
 }
