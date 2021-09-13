@@ -14,6 +14,8 @@ import com.hatidzheonbashieva.githubrepoproject.database.RepoEntity
 import com.hatidzheonbashieva.githubrepoproject.databinding.FragmentStarredBinding
 import com.hatidzheonbashieva.githubrepoproject.fragments.detailsFragment.DetailsFragment
 import com.hatidzheonbashieva.githubrepoproject.fragments.starredFragment.lists.StarredAdapter
+import java.util.*
+import kotlin.collections.ArrayList
 
 class StarredFragment : Fragment() {
 
@@ -102,7 +104,7 @@ class StarredFragment : Fragment() {
 
                 for (user in starredAdapter.repoEntity) {
 
-                    if (user.username?.contains(searchText) == true) {
+                    if (user.username?.lowercase(Locale.getDefault())?.contains(searchText) == true) {
                         filteredList.add(user)
                     }
                     updateRepoList(filteredList)

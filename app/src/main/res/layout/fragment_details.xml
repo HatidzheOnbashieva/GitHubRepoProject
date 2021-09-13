@@ -13,7 +13,7 @@
 
         <ImageView
             android:id="@+id/back"
-            android:layout_width="50dp"
+            android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@drawable/ic_arrow_back"
             android:layout_marginTop="10dp"
@@ -23,7 +23,7 @@
 
         <ImageView
             android:id="@+id/favourite"
-            android:layout_width="50dp"
+            android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@drawable/ic_star_no_fill"
             android:layout_marginTop="20dp"
@@ -75,13 +75,13 @@
             android:id="@+id/repoName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="10dp"
             android:text="@string/repository_name"
             android:textColor="@color/blue"
             android:textSize="25sp"
-            app:layout_constraintEnd_toEndOf="@id/view1"
-            app:layout_constraintStart_toStartOf="@id/view1"
-            app:layout_constraintTop_toBottomOf="@id/view1" />
+            app:layout_constraintEnd_toEndOf="@id/url"
+            app:layout_constraintStart_toStartOf="@id/url"
+            app:layout_constraintTop_toBottomOf="@id/url"/>
 
         <TextView
             android:id="@+id/description"
@@ -91,8 +91,8 @@
             android:text="@string/description"
             android:textColor="@color/white"
             android:textSize="15sp"
-            app:layout_constraintEnd_toEndOf="@id/view1"
-            app:layout_constraintStart_toStartOf="@id/view1"
+            app:layout_constraintEnd_toEndOf="@id/repoName"
+            app:layout_constraintStart_toStartOf="@id/repoName"
             app:layout_constraintTop_toBottomOf="@id/repoName"/>
 
         <TextView
@@ -103,9 +103,9 @@
             android:text="@string/language"
             android:textColor="@color/white"
             android:textSize="15sp"
-            app:layout_constraintStart_toStartOf="@id/view1"
+            app:layout_constraintStart_toStartOf="@id/description"
             app:layout_constraintTop_toBottomOf="@id/description"
-            app:layout_constraintEnd_toEndOf="@id/view1"/>
+            app:layout_constraintEnd_toEndOf="@id/description"/>
 
         <TextView
             android:id="@+id/dateCreated"
@@ -115,20 +115,20 @@
             android:text="@string/date_created"
             android:textColor="@color/white"
             android:textSize="15sp"
-            app:layout_constraintEnd_toEndOf="@id/view1"
-            app:layout_constraintStart_toStartOf="@id/view1"
+            app:layout_constraintEnd_toEndOf="@id/language"
+            app:layout_constraintStart_toStartOf="@id/language"
             app:layout_constraintTop_toBottomOf="@id/language"/>
 
         <ImageView
             android:id="@+id/url"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            app:layout_constraintStart_toEndOf="@id/repoName"
-            app:layout_constraintBottom_toBottomOf="@id/repoName"
-            app:layout_constraintTop_toTopOf="@id/repoName"
-            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
             android:background="@drawable/ic_link"
-            android:contentDescription="@string/followUrl" />
+            android:contentDescription="@string/followUrl"
+            app:layout_constraintEnd_toEndOf="@id/view1"
+            app:layout_constraintStart_toStartOf="@id/view1"
+            app:layout_constraintTop_toBottomOf="@id/view1"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

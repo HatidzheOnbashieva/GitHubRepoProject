@@ -11,7 +11,10 @@ import androidx.fragment.app.viewModels
 import com.hatidzheonbashieva.githubrepoproject.R
 import com.hatidzheonbashieva.githubrepoproject.database.RepoEntity
 import com.hatidzheonbashieva.githubrepoproject.databinding.FragmentDetailsBinding
+import com.hatidzheonbashieva.githubrepoproject.utils.trimDate
 import com.squareup.picasso.Picasso
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class DetailsFragment : Fragment() {
 
@@ -42,13 +45,13 @@ class DetailsFragment : Fragment() {
         var dateCreated: String? = this.requireArguments().getString("dateCreated")
         var url: String? = this.requireArguments().getString("url")
 
-
         Picasso.get().load(avatarUrl).into(viewBinding?.profileImage)
         viewBinding?.username?.text = username
         viewBinding?.repoName?.text = repoName
         viewBinding?.description?.text = description
         viewBinding?.language?.text = language
-        viewBinding?.dateCreated?.text = dateCreated
+        val newDate = dateCreated?.let { trimDate(it) }
+        viewBinding?.dateCreated?.text = newDate.toString()
         viewBinding?.url?.setOnClickListener {
             val followUrl = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             startActivity(followUrl)

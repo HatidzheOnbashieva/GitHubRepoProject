@@ -19,10 +19,8 @@ class DetailsViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun getRepoId(repoId: Int): LiveData<Boolean> {
-        val response = repository.getRepoId(repoId)
-        return response
-    }
+    fun getRepoId(repoId: Int): LiveData<Boolean> = repository.getRepoId(repoId)
+
 
     fun deleteRepoId(repoId: Int) {
         viewModelScope.launch(Dispatchers.IO) {

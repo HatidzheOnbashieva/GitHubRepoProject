@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GitHubRepoProject</string>
+    <string name="app_name">GitHub</string>
     <string name="icon">Profile icon</string>
     <string name="tv_username">Username here</string>
     <string name="repository_name">Repository name here</string>

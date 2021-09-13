@@ -24,6 +24,5 @@
         <item name="android:textColorSecondary">@color/white</item>
         <!-- Hint Color -->
         <item name="android:textColorHint">@color/white</item>
-
     </style>
 </resources>
