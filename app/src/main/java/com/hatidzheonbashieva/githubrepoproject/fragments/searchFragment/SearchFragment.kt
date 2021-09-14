@@ -44,7 +44,6 @@ class SearchFragment : Fragment() {
         (activity as AppCompatActivity).setSupportActionBar(viewBinding?.toolbar)
         setHasOptionsMenu(true)
 
-        //viewModel.getUsername()
 
         viewModel.userRepoList.observe(requireActivity(), Observer {
             if (it.isNotEmpty()) {
@@ -126,7 +125,6 @@ class SearchFragment : Fragment() {
 
         viewModel.userRepoList.observe(requireActivity(), Observer {
             if (it.isNotEmpty()) {
-                println(it) //delete this one later
                 viewBinding?.errorText?.visibility = View.INVISIBLE
                 viewBinding?.searchRecyclerView?.visibility = View.VISIBLE
                 updateRepoList(it)

@@ -22,10 +22,8 @@ object StarredRepository {
 
         fun getAllRepos(): LiveData<List<RepoEntity>> = readAllRepos
 
-        fun getRepoId(repoID: Int): LiveData<Boolean> {
-            val response = repoDao.getRepoId(repoID)
-            return response
-        }
+        fun getRepoId(repoID: Int): LiveData<Boolean> = repoDao.getRepoId(repoID)
+
 
         suspend fun addRepo(repo: RepoEntity) {
             repoDao.addRepo(repo)

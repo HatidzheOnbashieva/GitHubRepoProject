@@ -13,8 +13,6 @@ import com.hatidzheonbashieva.githubrepoproject.database.RepoEntity
 import com.hatidzheonbashieva.githubrepoproject.databinding.FragmentDetailsBinding
 import com.hatidzheonbashieva.githubrepoproject.utils.trimDate
 import com.squareup.picasso.Picasso
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 class DetailsFragment : Fragment() {
 

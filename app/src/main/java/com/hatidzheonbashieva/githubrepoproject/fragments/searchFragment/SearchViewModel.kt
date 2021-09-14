@@ -16,8 +16,6 @@ class SearchViewModel : ViewModel() {
         _username.value = username
     }
 
-    fun getUsername() = _username.value
-
     fun cancelJobs() {
         SearchRepository.cancelJobs()
     }
