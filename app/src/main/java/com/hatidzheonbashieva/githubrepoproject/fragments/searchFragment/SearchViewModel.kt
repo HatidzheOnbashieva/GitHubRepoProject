@@ -1,23 +1,20 @@
 package com.hatidzheonbashieva.githubrepoproject.fragments.searchFragment
 
-import androidx.lifecycle.*
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.hatidzheonbashieva.githubrepoproject.model.Repos
 import com.hatidzheonbashieva.githubrepoproject.searchRepository.SearchRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class SearchViewModel : ViewModel() {
 
-    private var _username: MutableLiveData<String> = MutableLiveData()
+    val userRepos: MutableLiveData<List<Repos>> = MutableLiveData()
 
-    val userRepoList: LiveData<List<Repos>> = Transformations.switchMap(_username) {
-        SearchRepository.getUserRepos(it)
+    fun setUsername(username: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            userRepos.postValue(SearchRepository.getUserRepos(username))
+        }
     }
-
-    fun setUsername(username: String) {
-        _username.value = username
-    }
-
-    fun cancelJobs() {
-        SearchRepository.cancelJobs()
-    }
-
 }

@@ -1,15 +1,11 @@
 package com.hatidzheonbashieva.githubrepoproject.fragments.starredFragment
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import com.hatidzheonbashieva.githubrepoproject.database.RepoEntity
 import com.hatidzheonbashieva.githubrepoproject.searchRepository.StarredRepository
 
-class StarredViewModel(application: Application) : AndroidViewModel(application) {
+class StarredViewModel : ViewModel() {
 
-    private val repository = StarredRepository.RepoRepository(application)
-    private val readAllRepos = repository.getAllRepos()
-
-    fun getAllRepos(): LiveData<List<RepoEntity>> = readAllRepos
+    fun getAllRepos(): LiveData<List<RepoEntity>> = StarredRepository.getAllRepos()
 }

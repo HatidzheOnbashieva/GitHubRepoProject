@@ -8,4 +8,7 @@
         android:icon="@drawable/ic_search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView"/>
+<!--    actionViewClass - the class of a widget that implements the action -->
+<!--    adding a searchView widget to the app bar-->
+<!--    to show it inside the toolbar -> ifRoom-->
 </menu>

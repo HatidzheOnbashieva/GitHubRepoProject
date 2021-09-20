@@ -21,7 +21,6 @@ class SearchFragment : Fragment() {
     private var viewBinding: FragmentSearchBinding? = null
     private val viewModel: SearchViewModel by viewModels()
     private lateinit var searchAdapter: SearchAdapter
-    private var newUsername: String = ""
 
     companion object {
         private var ERRORTEXT = "There is no user with such username!"
@@ -44,8 +43,7 @@ class SearchFragment : Fragment() {
         (activity as AppCompatActivity).setSupportActionBar(viewBinding?.toolbar)
         setHasOptionsMenu(true)
 
-
-        viewModel.userRepoList.observe(requireActivity(), Observer {
+        viewModel.userRepos.observe(viewLifecycleOwner, Observer {
             if (it.isNotEmpty()) {
                 viewBinding?.errorText?.visibility = View.INVISIBLE
                 viewBinding?.searchRecyclerView?.visibility = View.VISIBLE
@@ -56,11 +54,6 @@ class SearchFragment : Fragment() {
                 viewBinding?.errorText?.text = ERRORTEXT
             }
         })
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        viewModel.cancelJobs()
     }
 
     private fun setUpAdapter() {
@@ -98,9 +91,11 @@ class SearchFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        //inflating the menu
         inflater.inflate(R.menu.menu_search, menu)
-
+        //initialize menu item
         val searchMenuItem = menu.findItem(R.id.searchRepos)
+        //initialize searchView
         val searchView = searchMenuItem?.actionView as SearchView
 
         searchView.queryHint = "Enter a username..."
@@ -108,30 +103,14 @@ class SearchFragment : Fragment() {
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
-                newUsername = query.replace(" ", "")
+                val newUsername = query.replace(" ", "")
+                viewModel.setUsername(newUsername)
                 searchMenuItem.collapseActionView()
-                call()
                 return false
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
                 return false
-            }
-        })
-    }
-
-    private fun call() {
-        viewModel.setUsername(username = newUsername)
-
-        viewModel.userRepoList.observe(requireActivity(), Observer {
-            if (it.isNotEmpty()) {
-                viewBinding?.errorText?.visibility = View.INVISIBLE
-                viewBinding?.searchRecyclerView?.visibility = View.VISIBLE
-                updateRepoList(it)
-            } else {
-                viewBinding?.searchRecyclerView?.visibility = View.INVISIBLE
-                viewBinding?.errorText?.visibility = View.VISIBLE
-                viewBinding?.errorText?.text = ERRORTEXT
             }
         })
     }

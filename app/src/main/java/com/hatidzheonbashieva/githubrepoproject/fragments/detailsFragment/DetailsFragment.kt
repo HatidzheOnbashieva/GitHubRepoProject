@@ -62,7 +62,6 @@ class DetailsFragment : Fragment() {
             }
         })
 
-
         goBack()
 
         viewBinding?.favourite?.setOnClickListener {
@@ -87,7 +86,6 @@ class DetailsFragment : Fragment() {
                 true
             }
         }
-
     }
 
     private fun goBack() {

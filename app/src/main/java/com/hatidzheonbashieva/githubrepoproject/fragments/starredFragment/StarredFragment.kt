@@ -40,7 +40,7 @@ class StarredFragment : Fragment() {
         (activity as AppCompatActivity).setSupportActionBar(viewBinding?.toolbar)
         setHasOptionsMenu(true)
 
-        viewModel.getAllRepos().observe(requireActivity(), {
+        viewModel.getAllRepos().observe(viewLifecycleOwner, {
             updateRepoList(it)
         })
 
@@ -95,23 +95,13 @@ class StarredFragment : Fragment() {
 
             override fun onQueryTextChange(newText: String): Boolean {
                 val searchText = newText.replace(" ", "")
-                val filteredList: MutableList<RepoEntity> = mutableListOf()
 
-                viewModel.getAllRepos().observe(requireActivity(), {
-                    updateRepoList(it)
-                })
-
-                for (user in starredAdapter.repoEntity) {
-
-                    if (user.username?.lowercase(Locale.getDefault())?.contains(searchText) == true) {
-                        filteredList.add(user)
-                    }
-                    updateRepoList(filteredList)
+                val filteredList =  starredAdapter.repoEntity.filter {
+                    it.username?.lowercase(Locale.getDefault())?.contains(searchText) == true
                 }
+                updateRepoList(filteredList)
                 return false
             }
-
         })
     }
-
 }
