@@ -15,13 +15,13 @@ import com.hatidzheonbashieva.githubrepoproject.databinding.FragmentStarredBindi
 import com.hatidzheonbashieva.githubrepoproject.fragments.detailsFragment.DetailsFragment
 import com.hatidzheonbashieva.githubrepoproject.fragments.starredFragment.lists.StarredAdapter
 import java.util.*
-import kotlin.collections.ArrayList
 
 class StarredFragment : Fragment() {
 
     private var viewBinding: FragmentStarredBinding? = null
     private val viewModel: StarredViewModel by viewModels()
     private lateinit var starredAdapter: StarredAdapter
+    private lateinit var newList: List<RepoEntity>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,6 +42,7 @@ class StarredFragment : Fragment() {
 
         viewModel.getAllRepos().observe(viewLifecycleOwner, {
             updateRepoList(it)
+            newList = it
         })
 
     }
@@ -96,7 +97,9 @@ class StarredFragment : Fragment() {
             override fun onQueryTextChange(newText: String): Boolean {
                 val searchText = newText.replace(" ", "")
 
-                val filteredList =  starredAdapter.repoEntity.filter {
+                updateRepoList(newList)
+
+                val filteredList = starredAdapter.repoEntity.filter {
                     it.username?.lowercase(Locale.getDefault())?.contains(searchText) == true
                 }
                 updateRepoList(filteredList)
