@@ -5,8 +5,8 @@ import java.io.Serializable
 
 
 data class Owners(
-    @SerializedName("login") var _username: String?,
-    @SerializedName("avatar_url") var _avatarUrl: String?
+    @SerializedName("login") var _username: String,
+    @SerializedName("avatar_url") var _avatarUrl: String
 ) : Serializable {
 
 

@@ -10,21 +10,27 @@ object SearchRepository {
     private var PAGE = 1
     private var PER_PAGE = 50
     private var SORT = "name"
-    private lateinit var userRepos: List<Repos>
 
     suspend fun getUserRepos(username: String): List<Repos> {
-        userRepos = try {
+        val userRepos = try {
             RetrofitBuilder.apiService.getUserRepos(
-                username,
-                TYPE,
-                PER_PAGE,
-                PAGE,
-                SORT
+                    username,
+                    TYPE,
+                    PER_PAGE,
+                    PAGE,
+                    SORT
             )
 
         } catch (ex: HttpException) {
             emptyList()
         }
         return userRepos
+    }
+
+    suspend fun getRepos(username: String, repoName: String): Repos {
+        return RetrofitBuilder.apiService.getRepos(
+                    username,
+                    repoName
+            )
     }
 }

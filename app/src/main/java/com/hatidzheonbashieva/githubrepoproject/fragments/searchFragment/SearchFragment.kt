@@ -6,20 +6,22 @@ import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.hatidzheonbashieva.githubrepoproject.MainViewModel
 import com.hatidzheonbashieva.githubrepoproject.R
 import com.hatidzheonbashieva.githubrepoproject.databinding.FragmentSearchBinding
-import com.hatidzheonbashieva.githubrepoproject.fragments.detailsFragment.DetailsFragment
+import com.hatidzheonbashieva.githubrepoproject.fragments.detailsFragment.RepoDetailsArgument
 import com.hatidzheonbashieva.githubrepoproject.fragments.searchFragment.lists.SearchAdapter
 import com.hatidzheonbashieva.githubrepoproject.model.Repos
 
 class SearchFragment : Fragment() {
 
-    private var viewBinding: FragmentSearchBinding? = null
+    private lateinit var viewBinding: FragmentSearchBinding
     private val viewModel: SearchViewModel by viewModels()
+    private val mainViewModel: MainViewModel by activityViewModels()
     private lateinit var searchAdapter: SearchAdapter
 
     companion object {
@@ -30,56 +32,38 @@ class SearchFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         viewBinding = FragmentSearchBinding.inflate(layoutInflater, container, false)
-        return viewBinding?.root
+        return viewBinding.root
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpAdapter()
-        viewBinding?.toolbar?.title = "Search for a user"
-        (activity as AppCompatActivity).setSupportActionBar(viewBinding?.toolbar)
+        viewBinding.toolbar.title = "Search for a user"
+        (activity as AppCompatActivity).setSupportActionBar(viewBinding.toolbar)
         setHasOptionsMenu(true)
 
         viewModel.userRepos.observe(viewLifecycleOwner, Observer {
             if (it.isNotEmpty()) {
-                viewBinding?.errorText?.visibility = View.INVISIBLE
-                viewBinding?.searchRecyclerView?.visibility = View.VISIBLE
+                viewBinding.errorText.visibility = View.INVISIBLE
+                viewBinding.searchRecyclerView.visibility = View.VISIBLE
                 updateRepoList(it)
             } else {
-                viewBinding?.searchRecyclerView?.visibility = View.INVISIBLE
-                viewBinding?.errorText?.visibility = View.VISIBLE
-                viewBinding?.errorText?.text = ERRORTEXT
+                viewBinding.searchRecyclerView.visibility = View.INVISIBLE
+                viewBinding.errorText.visibility = View.VISIBLE
+                viewBinding.errorText.text = ERRORTEXT
             }
         })
     }
 
     private fun setUpAdapter() {
-        viewBinding?.searchRecyclerView?.layoutManager = LinearLayoutManager(activity)
+        viewBinding.searchRecyclerView.layoutManager = LinearLayoutManager(activity)
         searchAdapter = SearchAdapter { repoItem ->
-            goToDetailsFragment(repoItem)
+            mainViewModel.goToDetailsFragment(RepoDetailsArgument(repoItem.users.username, repoItem.repoName))
         }
-        viewBinding?.searchRecyclerView?.adapter = searchAdapter
-    }
-
-    private fun goToDetailsFragment(repoItem: Repos) {
-        val fragment = DetailsFragment()
-        val bundle = Bundle()
-        bundle.putInt("repoId", repoItem.id)
-        bundle.putString("repoName", repoItem.repoName)
-        bundle.putString("username", repoItem.users?.username)
-        bundle.putString("avatarUrl", repoItem.users?.avatarUrl)
-        bundle.putString("description", repoItem.description)
-        bundle.putString("language", repoItem.language)
-        bundle.putString("dateCreated", repoItem.dateCreated)
-        bundle.putString("url", repoItem.url)
-        fragment.arguments = bundle
-
-        val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, fragment).addToBackStack("searchFragment")
-            .commit()
+        viewBinding.searchRecyclerView.adapter = searchAdapter
     }
 
 

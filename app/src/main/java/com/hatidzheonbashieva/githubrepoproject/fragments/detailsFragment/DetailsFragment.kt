@@ -16,80 +16,77 @@ import com.squareup.picasso.Picasso
 
 class DetailsFragment : Fragment() {
 
-    private var viewBinding: FragmentDetailsBinding? = null
+    private lateinit var viewBinding: FragmentDetailsBinding
+    private lateinit var repoEntity: RepoEntity
     private var favouriteFlag: Boolean = false
     private val viewModel: DetailsViewModel by viewModels()
+    private var repoId: Int = 0
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+    ): View {
 
         viewBinding = FragmentDetailsBinding.inflate(layoutInflater, container, false)
 
-        return viewBinding?.root
+        return viewBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        var repoId: Int = this.requireArguments().getInt("repoId")
-        var repoName: String? = this.requireArguments().getString("repoName")
-        var username: String? = this.requireArguments().getString("username")
-        var avatarUrl: String? = this.requireArguments().getString("avatarUrl")
-        var description: String? = this.requireArguments().getString("description")
-        var language: String? = this.requireArguments().getString("language")
-        var dateCreated: String? = this.requireArguments().getString("dateCreated")
-        var url: String? = this.requireArguments().getString("url")
+        viewModel.arguments.observe(viewLifecycleOwner, { repo ->
+            repoEntity = RepoEntity(
+                    repo.id,
+                    repo.repoName,
+                    repo.users.username,
+                    repo.users.avatarUrl,
+                    repo.description,
+                    repo.language,
+                    repo.dateCreated,
+                    repo.url)
 
-        Picasso.get().load(avatarUrl).into(viewBinding?.profileImage)
-        viewBinding?.username?.text = username
-        viewBinding?.repoName?.text = repoName
-        viewBinding?.description?.text = description
-        viewBinding?.language?.text = language
-        val newDate = dateCreated?.let { trimDate(it) }
-        viewBinding?.dateCreated?.text = newDate.toString()
-        viewBinding?.url?.setOnClickListener {
-            val followUrl = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            startActivity(followUrl)
-        }
+            repoId = repo.id
+            viewModel.getRepoId(repo.id).observe(viewLifecycleOwner, {
+                if (it) {
+                    favouriteFlag = true
+                    viewBinding.favourite.setImageResource(R.drawable.ic_filled_star)
+                }
+            })
 
-        viewModel.getRepoId(repoId).observe(viewLifecycleOwner, {
-            if (it) {
-                favouriteFlag = true
-                viewBinding?.favourite?.setImageResource(R.drawable.ic_filled_star)
+            Picasso.get().load(repo.users.avatarUrl).into(viewBinding.profileImage)
+            viewBinding.username.text = repo.users.username
+            viewBinding.repoName.text = repo.repoName
+            viewBinding.description.text = repo.description
+            viewBinding.language.text = repo.language
+            val newDate = trimDate(repo.dateCreated)
+            viewBinding.dateCreated.text = newDate.toString()
+            viewBinding.url.setOnClickListener {
+                val followUrl = Intent(Intent.ACTION_VIEW, Uri.parse(repo.url))
+                startActivity(followUrl)
             }
         })
 
+
+
         goBack()
 
-        viewBinding?.favourite?.setOnClickListener {
-            val repo = RepoEntity(
-                repoId,
-                repoName,
-                username,
-                avatarUrl,
-                description,
-                language,
-                dateCreated,
-                url
-            )
-
+        viewBinding.favourite.setOnClickListener {
             favouriteFlag = if (favouriteFlag) {
                 viewModel.deleteRepoId(repoId)
-                viewBinding?.favourite?.setImageResource(R.drawable.ic_star_no_fill)
+                viewBinding.favourite.setImageResource(R.drawable.ic_star_no_fill)
                 false
             } else {
-                viewModel.addRepo(repo)
-                viewBinding?.favourite?.setImageResource(R.drawable.ic_filled_star)
+                viewModel.addRepo(repoEntity)
+                viewBinding.favourite.setImageResource(R.drawable.ic_filled_star)
                 true
             }
         }
     }
 
     private fun goBack() {
-        viewBinding?.back?.setOnClickListener {
+        viewBinding.back.setOnClickListener {
             parentFragmentManager.popBackStack()
         }
     }

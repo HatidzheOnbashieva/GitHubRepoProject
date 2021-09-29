@@ -15,4 +15,10 @@ interface ApiService {
         @Query("page") page: Int,
         @Query("sort") sort: String?
     ): List<Repos>
+
+    @GET("repos/{username}/{repoName}")
+    suspend fun getRepos(
+            @Path("username") username: String,
+            @Path("repoName") repoName: String
+    ): Repos
 }

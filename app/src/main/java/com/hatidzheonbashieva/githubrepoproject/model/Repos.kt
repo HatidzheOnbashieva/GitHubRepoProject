@@ -4,12 +4,12 @@ import com.google.gson.annotations.SerializedName
 
 data class Repos(
     @SerializedName("id") var _id: Int,
-    @SerializedName("name") var _repoName: String?,
-    @SerializedName("owner") var _user: Owners?,
-    @SerializedName("description") var _description: String?,
-    @SerializedName("language") var _language: String?,
-    @SerializedName("created_at") var _dateCreated: String?,
-    @SerializedName("html_url") var _url: String?
+    @SerializedName("name") var _repoName: String,
+    @SerializedName("owner") var _user: Owners,
+    @SerializedName("description") var _description: String,
+    @SerializedName("language") var _language: String,
+    @SerializedName("created_at") var _dateCreated: String,
+    @SerializedName("html_url") var _url: String
 ) {
 
     val id

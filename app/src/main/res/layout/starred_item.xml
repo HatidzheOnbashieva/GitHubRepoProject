@@ -47,7 +47,10 @@
 
             <TextView
                 android:id="@+id/repoName"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:layout_marginHorizontal="16dp"
                 android:layout_height="wrap_content"
                 android:text="@string/repository_name"
                 android:textColor="@color/blue"
