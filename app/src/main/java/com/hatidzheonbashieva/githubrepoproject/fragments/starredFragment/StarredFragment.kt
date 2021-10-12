@@ -19,7 +19,7 @@ import java.util.*
 
 class StarredFragment : Fragment() {
 
-    private lateinit var viewBinding: FragmentStarredBinding
+    private var viewBinding: FragmentStarredBinding? = null
     private val viewModel: StarredViewModel by viewModels()
     private val mainViewModel: MainViewModel by activityViewModels()
     private lateinit var starredAdapter: StarredAdapter
@@ -29,17 +29,17 @@ class StarredFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
 
         viewBinding = FragmentStarredBinding.inflate(layoutInflater, container, false)
-        return viewBinding.root
+        return viewBinding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpAdapter()
-        viewBinding.toolbar.title = "Search for a user"
-        (activity as AppCompatActivity).setSupportActionBar(viewBinding.toolbar)
+        viewBinding?.toolbar?.title = "Search for a user"
+        (activity as AppCompatActivity).setSupportActionBar(viewBinding?.toolbar)
         setHasOptionsMenu(true)
 
         viewModel.getAllRepos().observe(viewLifecycleOwner, {
@@ -50,11 +50,11 @@ class StarredFragment : Fragment() {
     }
 
     private fun setUpAdapter() {
-        viewBinding.starredRecyclerView.layoutManager = LinearLayoutManager(activity)
+        viewBinding?.starredRecyclerView?.layoutManager = LinearLayoutManager(activity)
         starredAdapter = StarredAdapter { repoItem ->
             mainViewModel.goToDetailsFragment(RepoDetailsArgument(repoItem.username!!, repoItem.repoName!!))
         }
-        viewBinding.starredRecyclerView.adapter = starredAdapter
+        viewBinding?.starredRecyclerView?.adapter = starredAdapter
     }
 
     @SuppressLint("NotifyDataSetChanged")

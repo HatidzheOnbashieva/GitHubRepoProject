@@ -14,4 +14,7 @@
     <string name="backBtn">Go Back</string>
     <string name="favouriteBtn">Save/Delete Repo</string>
     <string name="followUrl">Follow Url</string>
+    <string name="load_data">Loading data...</string>
+    <string name="connection_question">Connect to a wi-fi?</string>
+    <string name="no_access_title">NO INTERNET ACCESS</string>
 </resources>

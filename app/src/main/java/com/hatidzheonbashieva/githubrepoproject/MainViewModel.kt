@@ -2,14 +2,24 @@ package com.hatidzheonbashieva.githubrepoproject
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.hatidzheonbashieva.githubrepoproject.fragments.detailsFragment.RepoDetailsArgument
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class MainViewModel: ViewModel() {
+class MainViewModel : ViewModel() {
 
     val arguments: MutableLiveData<RepoDetailsArgument> = MutableLiveData()
+    val loader: MutableLiveData<Boolean> = MutableLiveData()
 
-    fun goToDetailsFragment(argument: RepoDetailsArgument){
+
+    fun goToDetailsFragment(argument: RepoDetailsArgument) {
         arguments.postValue(argument)
     }
 
+    fun showHideProgressBar(state: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            loader.postValue(state)
+        }
+    }
 }

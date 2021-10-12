@@ -16,7 +16,7 @@ import com.squareup.picasso.Picasso
 
 class DetailsFragment : Fragment() {
 
-    private lateinit var viewBinding: FragmentDetailsBinding
+    private var viewBinding: FragmentDetailsBinding? = null
     private lateinit var repoEntity: RepoEntity
     private var favouriteFlag: Boolean = false
     private val viewModel: DetailsViewModel by viewModels()
@@ -26,11 +26,11 @@ class DetailsFragment : Fragment() {
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
-    ): View {
+    ): View? {
 
         viewBinding = FragmentDetailsBinding.inflate(layoutInflater, container, false)
 
-        return viewBinding.root
+        return viewBinding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -51,42 +51,40 @@ class DetailsFragment : Fragment() {
             viewModel.getRepoId(repo.id).observe(viewLifecycleOwner, {
                 if (it) {
                     favouriteFlag = true
-                    viewBinding.favourite.setImageResource(R.drawable.ic_filled_star)
+                    viewBinding?.favourite?.setImageResource(R.drawable.ic_filled_star)
                 }
             })
 
-            Picasso.get().load(repo.users.avatarUrl).into(viewBinding.profileImage)
-            viewBinding.username.text = repo.users.username
-            viewBinding.repoName.text = repo.repoName
-            viewBinding.description.text = repo.description
-            viewBinding.language.text = repo.language
+            Picasso.get().load(repo.users.avatarUrl).into(viewBinding?.profileImage)
+            viewBinding?.username?.text = repo.users.username
+            viewBinding?.repoName?.text = repo.repoName
+            viewBinding?.description?.text = repo.description
+            viewBinding?.language?.text = repo.language
             val newDate = trimDate(repo.dateCreated)
-            viewBinding.dateCreated.text = newDate.toString()
-            viewBinding.url.setOnClickListener {
+            viewBinding?.dateCreated?.text = newDate.toString()
+            viewBinding?.url?.setOnClickListener {
                 val followUrl = Intent(Intent.ACTION_VIEW, Uri.parse(repo.url))
                 startActivity(followUrl)
             }
         })
 
-
-
         goBack()
 
-        viewBinding.favourite.setOnClickListener {
+        viewBinding?.favourite?.setOnClickListener {
             favouriteFlag = if (favouriteFlag) {
                 viewModel.deleteRepoId(repoId)
-                viewBinding.favourite.setImageResource(R.drawable.ic_star_no_fill)
+                viewBinding!!.favourite.setImageResource(R.drawable.ic_star_no_fill)
                 false
             } else {
                 viewModel.addRepo(repoEntity)
-                viewBinding.favourite.setImageResource(R.drawable.ic_filled_star)
+                viewBinding!!.favourite.setImageResource(R.drawable.ic_filled_star)
                 true
             }
         }
     }
 
     private fun goBack() {
-        viewBinding.back.setOnClickListener {
+        viewBinding?.back?.setOnClickListener {
             parentFragmentManager.popBackStack()
         }
     }

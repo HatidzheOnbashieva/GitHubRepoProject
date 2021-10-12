@@ -1,12 +1,19 @@
 package com.hatidzheonbashieva.githubrepoproject
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkRequest
 import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import androidx.fragment.app.activityViewModels
-import com.hatidzheonbashieva.githubrepoproject.database.RepoEntity
 import com.hatidzheonbashieva.githubrepoproject.databinding.ActivityMainBinding
 import com.hatidzheonbashieva.githubrepoproject.fragments.detailsFragment.DetailsFragment
 import com.hatidzheonbashieva.githubrepoproject.fragments.detailsFragment.RepoDetailsArgument
@@ -16,6 +23,7 @@ import com.hatidzheonbashieva.githubrepoproject.fragments.starredFragment.Starre
 class MainActivity : AppCompatActivity() {
 
     private val mainViewModel: MainViewModel by viewModels()
+    private var dialog: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +48,15 @@ class MainActivity : AppCompatActivity() {
             goToDetailsFragment(it)
         })
 
+        mainViewModel.loader.observe(this, { state ->
+            if(state){
+                hideProgressBar()
+            }
+            else{
+                showProgressBar()
+            }
+        })
+
     }
 
     private fun goToDetailsFragment(argument: RepoDetailsArgument) {
@@ -50,12 +67,28 @@ class MainActivity : AppCompatActivity() {
 
         val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.fragment_container, fragment).addToBackStack("null")
-                .commit()
+            .commit()
     }
+
 
     private fun replaceFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
             .commit()
     }
+
+    private fun showProgressBar() {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        val inflater: LayoutInflater = this.layoutInflater
+        builder.setView(inflater.inflate(R.layout.loading_dialog, null))
+        builder.setCancelable(true)
+
+        dialog = builder.create()
+        dialog?.show()
+    }
+
+    private fun hideProgressBar() {
+        dialog?.dismiss()
+    }
+
 }
 

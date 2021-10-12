@@ -9,8 +9,8 @@ class SearchViewHolder(private val viewBinding: SearchItemBinding) :
     RecyclerView.ViewHolder(viewBinding.root) {
 
     fun setUserData(userData: Repos, onRowClick: (Repos) -> Unit) {
-        Picasso.get().load(userData.users?.avatarUrl).into(viewBinding.profileImage)
-        viewBinding.username.text = userData.users?.username
+        Picasso.get().load(userData.users.avatarUrl).into(viewBinding.profileImage)
+        viewBinding.username.text = userData.users.username
         viewBinding.repoName.text = userData.repoName
 
         viewBinding.root.setOnClickListener {
