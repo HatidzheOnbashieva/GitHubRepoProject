@@ -47,7 +47,7 @@ class DetailsFragment : Fragment() {
                     repo.dateCreated,
                     repo.url)
 
-            repoId = repo.id
+            //repoId = repo.id
             viewModel.getRepoId(repo.id).observe(viewLifecycleOwner, {
                 if (it) {
                     favouriteFlag = true

@@ -4,14 +4,16 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
+import android.net.Network
 import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import android.os.Bundle
 import android.provider.Settings
 import android.view.*
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -33,12 +35,12 @@ class SearchFragment : Fragment() {
     private val viewModel: SearchViewModel by viewModels()
     private val mainViewModel: MainViewModel by activityViewModels()
     private lateinit var searchAdapter: SearchAdapter
-    private var settingsFlag = false
     private var isNetworkConnected: Boolean = false
+    private var dialog: AlertDialog?  = null
 
-    companion object {
-        private var ERRORTEXT = "There is no user with such username!"
-    }
+//    companion object {
+//        private var ERRORTEXT = "There is no user with such username!"
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,24 +59,7 @@ class SearchFragment : Fragment() {
         (activity as AppCompatActivity).setSupportActionBar(viewBinding?.toolbar)
         setHasOptionsMenu(true)
 
-//        if (!isConnected()) {
-//                val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
-//                builder
-//                    .setTitle("NO INTERNET ACCESS")
-//                    .setMessage("Please connect to a wi-fi...")
-//                    .setCancelable(false)
-//                    .setPositiveButton("Connect") { dialog, id ->
-//                        startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
-//                        settingsFlag = true
-//
-//                    }
-//                    .setNegativeButton("Cancel") { dialog, id ->
-//                        requireActivity().finish()
-//                    }
-//                    .create()
-//                    .show()
-//        }
-
+        getConnectivityManager().registerNetworkCallback(getNetworkRequest(), getNetworkCallBack())
 
         viewModel.userRepos.observe(viewLifecycleOwner, Observer {
             if (it.isNotEmpty()) {
@@ -89,7 +74,10 @@ class SearchFragment : Fragment() {
                     mainViewModel.showHideProgressBar(true)
                     viewBinding?.searchRecyclerView?.visibility = View.INVISIBLE
                     viewBinding?.errorText?.visibility = View.VISIBLE
-                    viewBinding?.errorText?.text = ERRORTEXT
+//                    viewBinding?.errorText?.text = ERRORTEXT
+                    viewModel.errorMessage.observe(viewLifecycleOwner,{ errorMessage ->
+                        viewBinding?.errorText?.text = errorMessage
+                    })
                 }
             }
         })
@@ -130,19 +118,27 @@ class SearchFragment : Fragment() {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 val newUsername = query.replace(" ", "")
-                viewModel.setUsername(newUsername)
-                searchMenuItem.collapseActionView()
 
-                if (isConnected()) {
+
+                if (isNetworkConnected) {
                     mainViewModel.showHideProgressBar(false)
-                }
-                else {
-                    val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+                    viewModel.setUsername(newUsername)
+                    searchMenuItem.collapseActionView()
+
+                } else {
+                    val builder: AlertDialog.Builder = AlertDialog.Builder(requireActivity())
                     builder.setTitle("NO INTERNET ACCESS")
-                    builder.setMessage("Please check your internet connectivity!")
-                    builder.setCancelable(false)
-                    builder.create()
-                    builder.show()
+                        .setMessage("Please check your internet connectivity!")
+                        .setCancelable(false)
+                        .setPositiveButton("Connect") { _, _ ->
+                        startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
+                    }
+                        .setNegativeButton("Cancel") { dialog, _ ->
+                            dialog.cancel()
+                        }
+                        dialog = builder.create()
+                        dialog?.show()
+
                 }
                 return false
             }
@@ -153,31 +149,43 @@ class SearchFragment : Fragment() {
         })
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//        if(settingsFlag){
-//            parentFragmentManager.beginTransaction().replace(R.id.fragment_container, SearchFragment())
-//                .commit()
-//        }
+    override fun onResume() {
+        super.onResume()
+//        getConnectivityManager().registerNetworkCallback(getNetworkRequest(), getNetworkCallBack())
+    }
+//
+//    override fun onPause() {
+//        super.onPause()
+//        getConnectivityManager().unregisterNetworkCallback(getNetworkCallBack())
 //    }
 
-    private fun isConnected(): Boolean {
-        try {
-            val connectivityManager =
-                App.appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            val network = connectivityManager.activeNetwork
 
-            if (connectivityManager.getNetworkCapabilities(network)!!
-                    .hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
-                || connectivityManager.getNetworkCapabilities(network)!!
-                    .hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
-            ) {
-                return true
+    private fun getConnectivityManager() =
+        App.appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+
+    private fun getNetworkRequest(): NetworkRequest {
+        return NetworkRequest.Builder()
+            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+//            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+            .build()
+    }
+
+
+    private fun getNetworkCallBack(): ConnectivityManager.NetworkCallback {
+        return object : ConnectivityManager.NetworkCallback() {
+
+            override fun onAvailable(network: Network) {
+                super.onAvailable(network)
+                //Toast.makeText(App.appContext, "Internet is on!", Toast.LENGTH_SHORT).show()
+                isNetworkConnected = true
             }
-            return false
-        } catch (e: Exception) {
-            println("Error from catch in isConnected() method ${e.message}")
-            return false
+
+            override fun onLost(network: Network) {
+                super.onLost(network)
+                //Toast.makeText(App.appContext, "Internet is off!", Toast.LENGTH_SHORT).show()
+                isNetworkConnected = false
+            }
         }
     }
 }

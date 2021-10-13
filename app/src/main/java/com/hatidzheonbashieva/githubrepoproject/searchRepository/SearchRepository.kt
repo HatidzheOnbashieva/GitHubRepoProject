@@ -21,13 +21,13 @@ object SearchRepository {
 //                    SORT
 //            )
 //        } catch (ex: HttpException) {
-//            if(ex.code() == 404){
-//                emptyList()
+//            when (ex.code()) {
+//                301 -> emptyList()
+//                403 -> emptyList()
+//                404 -> emptyList()
+//                500 -> emptyList()
+//                else ->emptyList()
 //            }
-//            else{
-//                emptyList()
-//            }
-//
 //        }
 //        return userRepos
 //    }
@@ -41,6 +41,7 @@ object SearchRepository {
             SORT
         )
     }
+
     suspend fun getRepos(username: String, repoName: String): Repos {
         return RetrofitBuilder.apiService.getRepos(
                     username,

@@ -3,15 +3,13 @@ package com.hatidzheonbashieva.githubrepoproject
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
+import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.hatidzheonbashieva.githubrepoproject.databinding.ActivityMainBinding
@@ -24,12 +22,12 @@ class MainActivity : AppCompatActivity() {
 
     private val mainViewModel: MainViewModel by viewModels()
     private var dialog: AlertDialog? = null
+    private var isNetworkConnected:Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val viewBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
-
 
         if (supportFragmentManager.fragments.isEmpty()) {
             replaceFragment(SearchFragment())
@@ -56,7 +54,6 @@ class MainActivity : AppCompatActivity() {
                 showProgressBar()
             }
         })
-
     }
 
     private fun goToDetailsFragment(argument: RepoDetailsArgument) {
@@ -89,6 +86,5 @@ class MainActivity : AppCompatActivity() {
     private fun hideProgressBar() {
         dialog?.dismiss()
     }
-
 }
 
