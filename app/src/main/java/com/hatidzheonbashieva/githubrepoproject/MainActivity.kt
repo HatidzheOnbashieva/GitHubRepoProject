@@ -1,10 +1,5 @@
 package com.hatidzheonbashieva.githubrepoproject
 
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkCapabilities
-import android.net.NetworkRequest
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.activity.viewModels
@@ -22,7 +17,6 @@ class MainActivity : AppCompatActivity() {
 
     private val mainViewModel: MainViewModel by viewModels()
     private var dialog: AlertDialog? = null
-    private var isNetworkConnected:Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +26,20 @@ class MainActivity : AppCompatActivity() {
         if (supportFragmentManager.fragments.isEmpty()) {
             replaceFragment(SearchFragment())
         }
+
+        val customBottomNavigation = CustomBottomNavigation(this)
+
+//        when(customBottomNavigation.onItemClick()){
+//            1 -> replaceFragment(SearchFragment())
+//            2 -> replaceFragment(StarredFragment())
+//        }
+
+//        customBottomNavigation.onItemClick {
+//          when(it){
+//              1 -> replaceFragment(SearchFragment())
+//              2 -> replaceFragment(StarredFragment())
+//          }
+//        }
 
         viewBinding.bottomNav.setOnItemSelectedListener {
 

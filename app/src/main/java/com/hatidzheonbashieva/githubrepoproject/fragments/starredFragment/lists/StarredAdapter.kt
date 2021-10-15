@@ -1,20 +1,26 @@
 package com.hatidzheonbashieva.githubrepoproject.fragments.starredFragment.lists
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.hatidzheonbashieva.githubrepoproject.CustomItemLayout
 import com.hatidzheonbashieva.githubrepoproject.database.RepoEntity
-import com.hatidzheonbashieva.githubrepoproject.databinding.StarredItemBinding
 
 class StarredAdapter(var onRowClick: (RepoEntity) -> Unit) :
     RecyclerView.Adapter<StarredViewHolder>() {
 
     var repoEntity: ArrayList<RepoEntity> = arrayListOf()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StarredViewHolder {
-        val viewBinding =
-            StarredItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+//        val viewBinding =
+//            StarredItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+//
+//        return StarredViewHolder(viewBinding)
+        val customItemLayoutView = CustomItemLayout(parent.context)
 
-        return StarredViewHolder(viewBinding)
+        customItemLayoutView.layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        return StarredViewHolder(customItemLayoutView)
     }
 
     override fun onBindViewHolder(holder: StarredViewHolder, position: Int) {

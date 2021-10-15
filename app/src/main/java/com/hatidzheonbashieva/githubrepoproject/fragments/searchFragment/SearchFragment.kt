@@ -59,7 +59,7 @@ class SearchFragment : Fragment() {
         (activity as AppCompatActivity).setSupportActionBar(viewBinding?.toolbar)
         setHasOptionsMenu(true)
 
-        getConnectivityManager().registerNetworkCallback(getNetworkRequest(), getNetworkCallBack())
+      getConnectivityManager().registerNetworkCallback(getNetworkRequest(), getNetworkCallBack())
 
         viewModel.userRepos.observe(viewLifecycleOwner, Observer {
             if (it.isNotEmpty()) {
