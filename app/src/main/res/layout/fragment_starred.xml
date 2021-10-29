@@ -5,15 +5,15 @@
     android:layout_height="match_parent">
 
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <com.hatidzheonbashieva.githubrepoproject.CustomSearchBar
+        android:id="@+id/customSearchBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/darkBlack"
         android:theme="@style/AppSearchView"
-        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/darkBlack"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
 
     <androidx.recyclerview.widget.RecyclerView
@@ -24,14 +24,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintTop_toBottomOf="@id/customSearchBar"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/errorText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintTop_toBottomOf="@id/customSearchBar"
         android:text="Something"
         android:textColor="@color/red"
         android:visibility="invisible"

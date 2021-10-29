@@ -11,8 +11,6 @@ class MainViewModel : ViewModel() {
 
     val arguments: MutableLiveData<RepoDetailsArgument> = MutableLiveData()
     val loader: MutableLiveData<Boolean> = MutableLiveData()
-    val isConnected: MutableLiveData<Boolean> = MutableLiveData()
-
 
     fun goToDetailsFragment(argument: RepoDetailsArgument) {
         arguments.postValue(argument)
@@ -23,13 +21,4 @@ class MainViewModel : ViewModel() {
             loader.postValue(state)
         }
     }
-//
-//    fun internetConnectivityStatus():Boolean{
-//        if(isConnected.value == true){
-//            return true
-//        }else{
-//            return false
-//        }
-//
-//    }
 }

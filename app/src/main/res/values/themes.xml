@@ -17,7 +17,7 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="AppSearchView" parent="Widget.AppCompat.SearchView">
+    <style name="AppSearchView" parent="Widget.AppCompat.Toolbar">
         <!--This line changes the color of text in Toolbar-->
         <item name="android:textColorPrimary">@color/white</item>
         <!--This line changes the color of icons in toolbar (back, overflow menu icons)-->

@@ -69,6 +69,17 @@
             app:layout_constraintStart_toStartOf="@id/profileImage"
             app:layout_constraintTop_toBottomOf="@id/profileImage" />
 
+        <TextView
+            android:id="@+id/errorText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/red"
+            android:visibility="invisible"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="@id/username"
+            app:layout_constraintStart_toStartOf="@id/username"
+            app:layout_constraintTop_toBottomOf="@id/username" />
 
         <TextView
             android:id="@+id/repoName"

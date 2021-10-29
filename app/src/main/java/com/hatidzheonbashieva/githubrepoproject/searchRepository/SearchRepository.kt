@@ -2,7 +2,6 @@ package com.hatidzheonbashieva.githubrepoproject.searchRepository
 
 import com.hatidzheonbashieva.githubrepoproject.api.RetrofitBuilder
 import com.hatidzheonbashieva.githubrepoproject.model.Repos
-import retrofit2.HttpException
 
 object SearchRepository {
 
@@ -11,26 +10,6 @@ object SearchRepository {
     private var PER_PAGE = 50
     private var SORT = "name"
 
-//    suspend fun getUserRepos(username: String): List<Repos> {
-//        val userRepos = try {
-//            RetrofitBuilder.apiService.getUserRepos(
-//                    username,
-//                    TYPE,
-//                    PER_PAGE,
-//                    PAGE,
-//                    SORT
-//            )
-//        } catch (ex: HttpException) {
-//            when (ex.code()) {
-//                301 -> emptyList()
-//                403 -> emptyList()
-//                404 -> emptyList()
-//                500 -> emptyList()
-//                else ->emptyList()
-//            }
-//        }
-//        return userRepos
-//    }
 
     suspend fun getUserRepos(username: String): List<Repos> {
         return RetrofitBuilder.apiService.getUserRepos(

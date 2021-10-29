@@ -7,12 +7,14 @@ import com.hatidzheonbashieva.githubrepoproject.searchRepository.SearchRepositor
 import com.hatidzheonbashieva.githubrepoproject.searchRepository.StarredRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 class DetailsViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel() {
 
     //val arguments: MutableLiveData<RepoDetailsArgument> = MutableLiveData()
 
     val arguments: MutableLiveData<Repos> = MutableLiveData()
+    val errorMessage: MutableLiveData<String> = MutableLiveData()
 
     init {
        val savedArguments = savedStateHandle.get<RepoDetailsArgument>("argument")
@@ -23,7 +25,33 @@ class DetailsViewModel(private val savedStateHandle: SavedStateHandle) : ViewMod
 
     private fun setRepos(userName: String, repoName: String){
         viewModelScope.launch(Dispatchers.IO) {
-            arguments.postValue(SearchRepository.getRepos(userName, repoName))
+            try {
+                arguments.postValue(SearchRepository.getRepos(userName, repoName))
+
+            } catch (ex: HttpException) {
+                when (ex.code()) {
+                    301 -> {
+                        arguments.postValue(Repos())
+                        errorMessage.postValue("Moved Permanently")
+                    }
+                    403 -> {
+                        arguments.postValue(Repos())
+                        errorMessage.postValue("Forbidden - API rate limit exceeded")
+                    }
+                    404 -> {
+                        arguments.postValue(Repos())
+                        errorMessage.postValue("Not Found")
+                    }
+                    500 -> {
+                        arguments.postValue(Repos())
+                        errorMessage.postValue("Internal Server Error")
+                    }
+                    else -> {
+                        arguments.postValue(Repos())
+                        errorMessage.postValue("Unknown Error")
+                    }
+                }
+            }
         }
     }
 
@@ -34,7 +62,6 @@ class DetailsViewModel(private val savedStateHandle: SavedStateHandle) : ViewMod
     }
 
     fun getRepoId(repoId: Int): LiveData<Boolean> = StarredRepository.getRepoId(repoId)
-
 
 
     fun deleteRepoId(repoId: Int) {

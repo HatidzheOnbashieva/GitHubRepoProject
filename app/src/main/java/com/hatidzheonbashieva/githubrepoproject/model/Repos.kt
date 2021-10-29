@@ -12,6 +12,8 @@ data class Repos(
     @SerializedName("html_url") var _url: String
 ) {
 
+    constructor() : this(0, "", Owners("", ""), "","","", "")
+
     val id
         get() = _id ?: 0
 
@@ -43,4 +45,5 @@ data class Repos(
         this.dateCreated
         this.url
     }
+
 }

@@ -23,9 +23,9 @@ class DetailsFragment : Fragment() {
     private var repoId: Int = 0
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
 
         viewBinding = FragmentDetailsBinding.inflate(layoutInflater, container, false)
@@ -37,7 +37,13 @@ class DetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.arguments.observe(viewLifecycleOwner, { repo ->
-            repoEntity = RepoEntity(
+            if (repo.id == 0) {
+                viewModel.errorMessage.observe(viewLifecycleOwner, { errorMessage ->
+                    viewBinding?.errorText?.visibility = View.VISIBLE
+                    viewBinding?.errorText?.text = errorMessage
+                })
+            } else {
+                repoEntity = RepoEntity(
                     repo.id,
                     repo.repoName,
                     repo.users.username,
@@ -45,26 +51,27 @@ class DetailsFragment : Fragment() {
                     repo.description,
                     repo.language,
                     repo.dateCreated,
-                    repo.url)
+                    repo.url
+                )
 
-            //repoId = repo.id
-            viewModel.getRepoId(repo.id).observe(viewLifecycleOwner, {
-                if (it) {
-                    favouriteFlag = true
-                    viewBinding?.favourite?.setImageResource(R.drawable.ic_filled_star)
+                viewModel.getRepoId(repo.id).observe(viewLifecycleOwner, {
+                    if (it) {
+                        favouriteFlag = true
+                        viewBinding?.favourite?.setImageResource(R.drawable.ic_filled_star)
+                    }
+                })
+
+                Picasso.get().load(repo.users.avatarUrl).into(viewBinding?.profileImage)
+                viewBinding?.username?.text = repo.users.username
+                viewBinding?.repoName?.text = repo.repoName
+                viewBinding?.description?.text = repo.description
+                viewBinding?.language?.text = repo.language
+                val newDate = trimDate(repo.dateCreated)
+                viewBinding?.dateCreated?.text = newDate.toString()
+                viewBinding?.url?.setOnClickListener {
+                    val followUrl = Intent(Intent.ACTION_VIEW, Uri.parse(repo.url))
+                    startActivity(followUrl)
                 }
-            })
-
-            Picasso.get().load(repo.users.avatarUrl).into(viewBinding?.profileImage)
-            viewBinding?.username?.text = repo.users.username
-            viewBinding?.repoName?.text = repo.repoName
-            viewBinding?.description?.text = repo.description
-            viewBinding?.language?.text = repo.language
-            val newDate = trimDate(repo.dateCreated)
-            viewBinding?.dateCreated?.text = newDate.toString()
-            viewBinding?.url?.setOnClickListener {
-                val followUrl = Intent(Intent.ACTION_VIEW, Uri.parse(repo.url))
-                startActivity(followUrl)
             }
         })
 

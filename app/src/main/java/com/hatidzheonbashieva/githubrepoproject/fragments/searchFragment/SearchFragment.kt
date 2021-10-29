@@ -11,9 +11,9 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.*
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -36,11 +36,7 @@ class SearchFragment : Fragment() {
     private val mainViewModel: MainViewModel by activityViewModels()
     private lateinit var searchAdapter: SearchAdapter
     private var isNetworkConnected: Boolean = false
-    private var dialog: AlertDialog?  = null
-
-//    companion object {
-//        private var ERRORTEXT = "There is no user with such username!"
-//    }
+    private var dialog: AlertDialog? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,11 +51,12 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpAdapter()
-        viewBinding?.toolbar?.title = "Search for a user"
-        (activity as AppCompatActivity).setSupportActionBar(viewBinding?.toolbar)
+
+        viewBinding?.customSearchBar?.setSearchBar()
+        (activity as AppCompatActivity).setSupportActionBar(viewBinding?.customSearchBar)
         setHasOptionsMenu(true)
 
-      getConnectivityManager().registerNetworkCallback(getNetworkRequest(), getNetworkCallBack())
+        registerNetworkCallback()
 
         viewModel.userRepos.observe(viewLifecycleOwner, Observer {
             if (it.isNotEmpty()) {
@@ -74,8 +71,8 @@ class SearchFragment : Fragment() {
                     mainViewModel.showHideProgressBar(true)
                     viewBinding?.searchRecyclerView?.visibility = View.INVISIBLE
                     viewBinding?.errorText?.visibility = View.VISIBLE
-//                    viewBinding?.errorText?.text = ERRORTEXT
-                    viewModel.errorMessage.observe(viewLifecycleOwner,{ errorMessage ->
+
+                    viewModel.errorMessage.observe(viewLifecycleOwner, { errorMessage ->
                         viewBinding?.errorText?.text = errorMessage
                     })
                 }
@@ -105,6 +102,7 @@ class SearchFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+
         //inflating the menu
         inflater.inflate(R.menu.menu_search, menu)
         //initialize menu item
@@ -118,8 +116,6 @@ class SearchFragment : Fragment() {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 val newUsername = query.replace(" ", "")
-
-
                 if (isNetworkConnected) {
                     mainViewModel.showHideProgressBar(false)
                     viewModel.setUsername(newUsername)
@@ -131,13 +127,13 @@ class SearchFragment : Fragment() {
                         .setMessage("Please check your internet connectivity!")
                         .setCancelable(false)
                         .setPositiveButton("Connect") { _, _ ->
-                        startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
-                    }
+                            startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
+                        }
                         .setNegativeButton("Cancel") { dialog, _ ->
                             dialog.cancel()
                         }
-                        dialog = builder.create()
-                        dialog?.show()
+                    dialog = builder.create()
+                    dialog?.show()
 
                 }
                 return false
@@ -149,43 +145,25 @@ class SearchFragment : Fragment() {
         })
     }
 
-    override fun onResume() {
-        super.onResume()
-//        getConnectivityManager().registerNetworkCallback(getNetworkRequest(), getNetworkCallBack())
-    }
-//
-//    override fun onPause() {
-//        super.onPause()
-//        getConnectivityManager().unregisterNetworkCallback(getNetworkCallBack())
-//    }
+    private fun registerNetworkCallback() {
+        val connectivityManager =
+            App.appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
+        val builder = NetworkRequest.Builder()
+        builder.addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
 
-    private fun getConnectivityManager() =
-        App.appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkRequest = builder.build()
+        connectivityManager.registerNetworkCallback(networkRequest,
+            object : ConnectivityManager.NetworkCallback() {
+                override fun onAvailable(network: Network) {
+                    super.onAvailable(network)
+                    isNetworkConnected = true
+                }
 
-
-    private fun getNetworkRequest(): NetworkRequest {
-        return NetworkRequest.Builder()
-            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-//            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-            .build()
-    }
-
-
-    private fun getNetworkCallBack(): ConnectivityManager.NetworkCallback {
-        return object : ConnectivityManager.NetworkCallback() {
-
-            override fun onAvailable(network: Network) {
-                super.onAvailable(network)
-                //Toast.makeText(App.appContext, "Internet is on!", Toast.LENGTH_SHORT).show()
-                isNetworkConnected = true
-            }
-
-            override fun onLost(network: Network) {
-                super.onLost(network)
-                //Toast.makeText(App.appContext, "Internet is off!", Toast.LENGTH_SHORT).show()
-                isNetworkConnected = false
-            }
-        }
+                override fun onLost(network: Network) {
+                    super.onLost(network)
+                    isNetworkConnected = false
+                }
+            })
     }
 }

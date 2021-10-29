@@ -18,36 +18,23 @@ class MainActivity : AppCompatActivity() {
     private val mainViewModel: MainViewModel by viewModels()
     private var dialog: AlertDialog? = null
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val viewBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
+
         if (supportFragmentManager.fragments.isEmpty()) {
             replaceFragment(SearchFragment())
         }
 
-        val customBottomNavigation = CustomBottomNavigation(this)
 
-//        when(customBottomNavigation.onItemClick()){
-//            1 -> replaceFragment(SearchFragment())
-//            2 -> replaceFragment(StarredFragment())
-//        }
-
-//        customBottomNavigation.onItemClick {
-//          when(it){
-//              1 -> replaceFragment(SearchFragment())
-//              2 -> replaceFragment(StarredFragment())
-//          }
-//        }
-
-        viewBinding.bottomNav.setOnItemSelectedListener {
-
-            when (it.itemId) {
+        viewBinding.customBottomNav.onClick {
+            when(it.itemId){
                 R.id.searchRepos -> replaceFragment(SearchFragment())
                 R.id.starredRepos -> replaceFragment(StarredFragment())
             }
-            true
         }
 
         mainViewModel.arguments.observe(this, {
@@ -55,10 +42,9 @@ class MainActivity : AppCompatActivity() {
         })
 
         mainViewModel.loader.observe(this, { state ->
-            if(state){
+            if (state) {
                 hideProgressBar()
-            }
-            else{
+            } else {
                 showProgressBar()
             }
         })
@@ -85,7 +71,7 @@ class MainActivity : AppCompatActivity() {
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         val inflater: LayoutInflater = this.layoutInflater
         builder.setView(inflater.inflate(R.layout.loading_dialog, null))
-        builder.setCancelable(true)
+        builder.setCancelable(false)
 
         dialog = builder.create()
         dialog?.show()
