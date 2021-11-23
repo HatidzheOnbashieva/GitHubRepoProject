@@ -15,7 +15,7 @@
         app:layout_constraintBottom_toTopOf="@id/custom_bottom_nav"
         android:background="@color/black"/>
 
-    <com.hatidzheonbashieva.githubrepoproject.CustomBottomNavigation
+    <com.hatidzheonbashieva.githubrepoproject.customObjects.CustomBottomNavigation
         android:id="@+id/custom_bottom_nav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

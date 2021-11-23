@@ -3,10 +3,10 @@ package com.hatidzheonbashieva.githubrepoproject.searchRepository
 import androidx.lifecycle.LiveData
 import com.hatidzheonbashieva.githubrepoproject.database.RepoDao
 import com.hatidzheonbashieva.githubrepoproject.database.RepoEntity
-import com.hatidzheonbashieva.githubrepoproject.database.SingleRepoDatabase
+import javax.inject.Inject
 
-object StarredRepository {
-    private var repoDao: RepoDao = SingleRepoDatabase.instance.repoDao()
+class StarredRepository constructor(private val repoDao: RepoDao) {
+    //private var repoDao: RepoDao = SingleRepoDatabase.instance.repoDao()
 
     fun getAllRepos(): LiveData<List<RepoEntity>> = repoDao.getRepos()
 

@@ -2,7 +2,7 @@ package com.hatidzheonbashieva.githubrepoproject.fragments.searchFragment.lists
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.hatidzheonbashieva.githubrepoproject.CustomItemLayout
+import com.hatidzheonbashieva.githubrepoproject.customObjects.CustomItemLayout
 import com.hatidzheonbashieva.githubrepoproject.model.Repos
 
 class SearchAdapter(var onRowClick: (Repos) -> Unit) : RecyclerView.Adapter<SearchViewHolder>() {

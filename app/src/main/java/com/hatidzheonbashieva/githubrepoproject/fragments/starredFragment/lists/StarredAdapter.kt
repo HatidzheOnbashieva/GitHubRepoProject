@@ -2,7 +2,7 @@ package com.hatidzheonbashieva.githubrepoproject.fragments.starredFragment.lists
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.hatidzheonbashieva.githubrepoproject.CustomItemLayout
+import com.hatidzheonbashieva.githubrepoproject.customObjects.CustomItemLayout
 import com.hatidzheonbashieva.githubrepoproject.database.RepoEntity
 
 class StarredAdapter(var onRowClick: (RepoEntity) -> Unit) :

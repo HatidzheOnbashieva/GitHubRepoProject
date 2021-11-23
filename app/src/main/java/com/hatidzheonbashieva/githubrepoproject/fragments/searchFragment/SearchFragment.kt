@@ -26,9 +26,12 @@ import com.hatidzheonbashieva.githubrepoproject.databinding.FragmentSearchBindin
 import com.hatidzheonbashieva.githubrepoproject.fragments.detailsFragment.RepoDetailsArgument
 import com.hatidzheonbashieva.githubrepoproject.fragments.searchFragment.lists.SearchAdapter
 import com.hatidzheonbashieva.githubrepoproject.model.Repos
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class SearchFragment : Fragment() {
 
     private var viewBinding: FragmentSearchBinding? = null
@@ -37,6 +40,9 @@ class SearchFragment : Fragment() {
     private lateinit var searchAdapter: SearchAdapter
     private var isNetworkConnected: Boolean = false
     private var dialog: AlertDialog? = null
+
+    @Inject
+    lateinit var appContext: Context
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -147,7 +153,7 @@ class SearchFragment : Fragment() {
 
     private fun registerNetworkCallback() {
         val connectivityManager =
-            App.appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
         val builder = NetworkRequest.Builder()
         builder.addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)

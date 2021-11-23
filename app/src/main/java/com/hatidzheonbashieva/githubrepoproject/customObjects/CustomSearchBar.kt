@@ -1,4 +1,4 @@
-package com.hatidzheonbashieva.githubrepoproject
+package com.hatidzheonbashieva.githubrepoproject.customObjects
 
 import android.content.Context
 import android.util.AttributeSet

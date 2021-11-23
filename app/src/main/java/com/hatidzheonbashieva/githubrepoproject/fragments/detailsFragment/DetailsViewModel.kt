@@ -5,11 +5,17 @@ import com.hatidzheonbashieva.githubrepoproject.database.RepoEntity
 import com.hatidzheonbashieva.githubrepoproject.model.Repos
 import com.hatidzheonbashieva.githubrepoproject.searchRepository.SearchRepository
 import com.hatidzheonbashieva.githubrepoproject.searchRepository.StarredRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
+import javax.inject.Inject
 
-class DetailsViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel() {
+@HiltViewModel
+class DetailsViewModel @Inject constructor(
+    private val starredRepository: StarredRepository,
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
 
     //val arguments: MutableLiveData<RepoDetailsArgument> = MutableLiveData()
 
@@ -17,13 +23,13 @@ class DetailsViewModel(private val savedStateHandle: SavedStateHandle) : ViewMod
     val errorMessage: MutableLiveData<String> = MutableLiveData()
 
     init {
-       val savedArguments = savedStateHandle.get<RepoDetailsArgument>("argument")
+        val savedArguments = savedStateHandle.get<RepoDetailsArgument>("argument")
         //api call here
         setRepos(savedArguments!!.userName, savedArguments.repoName)
         //arguments.postValue(savedArguments)
     }
 
-    private fun setRepos(userName: String, repoName: String){
+    private fun setRepos(userName: String, repoName: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 arguments.postValue(SearchRepository.getRepos(userName, repoName))
@@ -57,16 +63,16 @@ class DetailsViewModel(private val savedStateHandle: SavedStateHandle) : ViewMod
 
     fun addRepo(repo: RepoEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            StarredRepository.addRepo(repo)
+            starredRepository.addRepo(repo)
         }
     }
 
-    fun getRepoId(repoId: Int): LiveData<Boolean> = StarredRepository.getRepoId(repoId)
+    fun getRepoId(repoId: Int): LiveData<Boolean> = starredRepository.getRepoId(repoId)
 
 
     fun deleteRepoId(repoId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            StarredRepository.deleteRepo(repoId)
+            starredRepository.deleteRepo(repoId)
         }
     }
 }

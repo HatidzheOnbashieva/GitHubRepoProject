@@ -1,7 +1,7 @@
 package com.hatidzheonbashieva.githubrepoproject.fragments.searchFragment.lists
 
 import androidx.recyclerview.widget.RecyclerView
-import com.hatidzheonbashieva.githubrepoproject.CustomItemLayout
+import com.hatidzheonbashieva.githubrepoproject.customObjects.CustomItemLayout
 import com.hatidzheonbashieva.githubrepoproject.model.Repos
 
 //class SearchViewHolder(private val viewBinding: SearchItemBinding) :

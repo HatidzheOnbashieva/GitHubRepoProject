@@ -23,12 +23,16 @@ import com.hatidzheonbashieva.githubrepoproject.MainViewModel
 import com.hatidzheonbashieva.githubrepoproject.R
 import com.hatidzheonbashieva.githubrepoproject.database.RepoEntity
 import com.hatidzheonbashieva.githubrepoproject.databinding.FragmentStarredBinding
+import com.hatidzheonbashieva.githubrepoproject.fragments.detailsFragment.DetailsViewModel
 import com.hatidzheonbashieva.githubrepoproject.fragments.detailsFragment.RepoDetailsArgument
 import com.hatidzheonbashieva.githubrepoproject.fragments.starredFragment.lists.StarredAdapter
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class StarredFragment : Fragment() {
 
     private var viewBinding: FragmentStarredBinding? = null
@@ -38,6 +42,9 @@ class StarredFragment : Fragment() {
     private lateinit var newList: List<RepoEntity>
     private var isNetworkConnected: Boolean = false
     private var dialog: AlertDialog? = null
+
+    @Inject
+    lateinit var appContext: Context
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -136,7 +143,7 @@ class StarredFragment : Fragment() {
 
 
     private fun registerNetworkCallback(){
-        val connectivityManager = App.appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connectivityManager = appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
         val builder = NetworkRequest.Builder()
         builder.addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)

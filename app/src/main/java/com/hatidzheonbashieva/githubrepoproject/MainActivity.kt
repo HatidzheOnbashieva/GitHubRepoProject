@@ -12,7 +12,9 @@ import com.hatidzheonbashieva.githubrepoproject.fragments.detailsFragment.Detail
 import com.hatidzheonbashieva.githubrepoproject.fragments.detailsFragment.RepoDetailsArgument
 import com.hatidzheonbashieva.githubrepoproject.fragments.searchFragment.SearchFragment
 import com.hatidzheonbashieva.githubrepoproject.fragments.starredFragment.StarredFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private val mainViewModel: MainViewModel by viewModels()
