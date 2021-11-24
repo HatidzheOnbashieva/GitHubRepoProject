@@ -19,7 +19,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.hatidzheonbashieva.githubrepoproject.App
 import com.hatidzheonbashieva.githubrepoproject.MainViewModel
 import com.hatidzheonbashieva.githubrepoproject.R
 import com.hatidzheonbashieva.githubrepoproject.databinding.FragmentSearchBinding

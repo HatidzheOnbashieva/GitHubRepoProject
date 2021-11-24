@@ -5,7 +5,7 @@ import com.hatidzheonbashieva.githubrepoproject.database.RepoDao
 import com.hatidzheonbashieva.githubrepoproject.database.RepoEntity
 import javax.inject.Inject
 
-class StarredRepository constructor(private val repoDao: RepoDao) {
+class StarredRepository @Inject constructor(private val repoDao: RepoDao) {
     //private var repoDao: RepoDao = SingleRepoDatabase.instance.repoDao()
 
     fun getAllRepos(): LiveData<List<RepoEntity>> = repoDao.getRepos()

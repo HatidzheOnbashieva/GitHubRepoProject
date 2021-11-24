@@ -18,12 +18,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.hatidzheonbashieva.githubrepoproject.App
 import com.hatidzheonbashieva.githubrepoproject.MainViewModel
 import com.hatidzheonbashieva.githubrepoproject.R
 import com.hatidzheonbashieva.githubrepoproject.database.RepoEntity
 import com.hatidzheonbashieva.githubrepoproject.databinding.FragmentStarredBinding
-import com.hatidzheonbashieva.githubrepoproject.fragments.detailsFragment.DetailsViewModel
 import com.hatidzheonbashieva.githubrepoproject.fragments.detailsFragment.RepoDetailsArgument
 import com.hatidzheonbashieva.githubrepoproject.fragments.starredFragment.lists.StarredAdapter
 import dagger.hilt.android.AndroidEntryPoint

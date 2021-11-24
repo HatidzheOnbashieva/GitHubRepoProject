@@ -16,6 +16,7 @@ import javax.inject.Singleton
 object DatabaseModule {
 
     @Provides
+    @Singleton
     fun provideRepoDao(repoDatabase: RepoDatabase): RepoDao{
         return repoDatabase.repoDao()
     }

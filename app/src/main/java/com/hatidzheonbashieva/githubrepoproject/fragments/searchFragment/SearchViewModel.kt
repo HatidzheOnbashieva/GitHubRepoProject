@@ -5,11 +5,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hatidzheonbashieva.githubrepoproject.model.Repos
 import com.hatidzheonbashieva.githubrepoproject.searchRepository.SearchRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
+import javax.inject.Inject
 
-class SearchViewModel : ViewModel() {
+@HiltViewModel
+class SearchViewModel @Inject constructor(
+    private val searchRepository: SearchRepository
+    ) : ViewModel() {
 
     val userRepos: MutableLiveData<List<Repos>> = MutableLiveData()
     val errorMessage: MutableLiveData<String> = MutableLiveData()
@@ -17,7 +22,7 @@ class SearchViewModel : ViewModel() {
     fun setUsername(username: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                userRepos.postValue(SearchRepository.getUserRepos(username))
+                userRepos.postValue(searchRepository.getUserRepos(username))
             }catch (ex: HttpException) {
                 when (ex.code()) {
                     301 -> {

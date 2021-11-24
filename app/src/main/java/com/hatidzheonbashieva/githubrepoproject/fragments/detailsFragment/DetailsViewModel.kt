@@ -13,8 +13,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DetailsViewModel @Inject constructor(
+    private val searchRepository: SearchRepository,
     private val starredRepository: StarredRepository,
-    private val savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     //val arguments: MutableLiveData<RepoDetailsArgument> = MutableLiveData()
@@ -32,7 +33,7 @@ class DetailsViewModel @Inject constructor(
     private fun setRepos(userName: String, repoName: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                arguments.postValue(SearchRepository.getRepos(userName, repoName))
+                arguments.postValue(searchRepository.getRepos(userName, repoName))
 
             } catch (ex: HttpException) {
                 when (ex.code()) {

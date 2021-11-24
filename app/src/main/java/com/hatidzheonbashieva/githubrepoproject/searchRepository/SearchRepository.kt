@@ -1,9 +1,10 @@
 package com.hatidzheonbashieva.githubrepoproject.searchRepository
 
-import com.hatidzheonbashieva.githubrepoproject.api.RetrofitBuilder
+import com.hatidzheonbashieva.githubrepoproject.api.ApiService
 import com.hatidzheonbashieva.githubrepoproject.model.Repos
+import javax.inject.Inject
 
-object SearchRepository {
+class SearchRepository @Inject constructor(private val apiService: ApiService) {
 
     private var TYPE = "owner"
     private var PAGE = 1
@@ -12,7 +13,7 @@ object SearchRepository {
 
 
     suspend fun getUserRepos(username: String): List<Repos> {
-        return RetrofitBuilder.apiService.getUserRepos(
+        return apiService.getUserRepos(
             username,
             TYPE,
             PER_PAGE,
@@ -22,9 +23,9 @@ object SearchRepository {
     }
 
     suspend fun getRepos(username: String, repoName: String): Repos {
-        return RetrofitBuilder.apiService.getRepos(
-                    username,
-                    repoName
-            )
+        return apiService.getRepos(
+            username,
+            repoName
+        )
     }
 }
