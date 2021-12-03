@@ -1,11 +1,9 @@
 package com.hatidzheonbashieva.githubrepoproject.fragments.starredFragment
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Network
-import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.Bundle
 import android.provider.Settings
@@ -26,6 +24,7 @@ import com.hatidzheonbashieva.githubrepoproject.fragments.detailsFragment.RepoDe
 import com.hatidzheonbashieva.githubrepoproject.fragments.starredFragment.lists.StarredAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -42,7 +41,10 @@ class StarredFragment : Fragment() {
     private var dialog: AlertDialog? = null
 
     @Inject
-    lateinit var appContext: Context
+    lateinit var connectivityManager: ConnectivityManager
+
+    @Inject
+    lateinit var networkRequest: NetworkRequest
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -64,11 +66,12 @@ class StarredFragment : Fragment() {
 
         registerNetworkCallback()
 
-        viewModel.getAllRepos().observe(viewLifecycleOwner, {
-            updateRepoList(it)
-            newList = it
-        })
-
+        lifecycleScope.launch {
+            viewModel.getAllRepos().collect{ repoEntity ->
+                updateRepoList(repoEntity)
+                newList = repoEntity
+            }
+        }
     }
 
     private fun setUpAdapter() {
@@ -141,12 +144,6 @@ class StarredFragment : Fragment() {
 
 
     private fun registerNetworkCallback(){
-        val connectivityManager = appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
-        val builder = NetworkRequest.Builder()
-        builder.addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-
-        val networkRequest = builder.build()
         connectivityManager.registerNetworkCallback(networkRequest,
             object : ConnectivityManager.NetworkCallback () {
                 override fun onAvailable(network: Network) {

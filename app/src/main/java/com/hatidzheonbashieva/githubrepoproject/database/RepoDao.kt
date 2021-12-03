@@ -1,15 +1,15 @@
 package com.hatidzheonbashieva.githubrepoproject.database
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RepoDao {
 
     @Query("SELECT * FROM repository ORDER BY username ASC")
-    fun getRepos(): LiveData<List<RepoEntity>>
+    fun getRepos(): Flow<List<RepoEntity>>
 
     @Query("DELETE FROM repository WHERE repoId = :repoId")
     suspend fun deleteRepo(repoId: Int)
@@ -18,5 +18,5 @@ interface RepoDao {
     suspend fun addRepo(repos: RepoEntity)
 
     @Query("SELECT EXISTS(SELECT * FROM repository WHERE repoId = :repoId)")
-    fun getRepoId(repoId: Int): LiveData<Boolean>
+    fun getRepoId(repoId: Int): Flow<Boolean>
 }

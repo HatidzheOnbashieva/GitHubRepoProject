@@ -1,11 +1,9 @@
 package com.hatidzheonbashieva.githubrepoproject.fragments.searchFragment
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Network
-import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.Bundle
 import android.provider.Settings
@@ -16,7 +14,6 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hatidzheonbashieva.githubrepoproject.MainViewModel
@@ -27,6 +24,7 @@ import com.hatidzheonbashieva.githubrepoproject.fragments.searchFragment.lists.S
 import com.hatidzheonbashieva.githubrepoproject.model.Repos
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -41,7 +39,10 @@ class SearchFragment : Fragment() {
     private var dialog: AlertDialog? = null
 
     @Inject
-    lateinit var appContext: Context
+    lateinit var connectivityManager: ConnectivityManager
+
+    @Inject
+    lateinit var networkRequest: NetworkRequest
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -63,37 +64,41 @@ class SearchFragment : Fragment() {
 
         registerNetworkCallback()
 
-        viewModel.userRepos.observe(viewLifecycleOwner, Observer {
-            if (it.isNotEmpty()) {
-                mainViewModel.showHideProgressBar(true)
-                viewBinding?.errorText?.visibility = View.INVISIBLE
-                viewBinding?.searchRecyclerView?.visibility = View.VISIBLE
-                updateRepoList(it)
-
-            } else {
-                lifecycleScope.launch {
-                    delay(3000)
+        lifecycleScope.launch {
+            viewModel.userRepos.collect { repoList ->
+                if (repoList.isNotEmpty()) {
                     mainViewModel.showHideProgressBar(true)
-                    viewBinding?.searchRecyclerView?.visibility = View.INVISIBLE
-                    viewBinding?.errorText?.visibility = View.VISIBLE
+                    viewBinding?.errorText?.visibility = View.INVISIBLE
+                    viewBinding?.searchRecyclerView?.visibility = View.VISIBLE
+                    updateRepoList(repoList)
 
-                    viewModel.errorMessage.observe(viewLifecycleOwner, { errorMessage ->
-                        viewBinding?.errorText?.text = errorMessage
-                    })
+                } else {
+                    lifecycleScope.launch {
+                        delay(3000)
+                        mainViewModel.showHideProgressBar(true)
+                        viewBinding?.searchRecyclerView?.visibility = View.INVISIBLE
+                        viewBinding?.errorText?.visibility = View.VISIBLE
+
+                        viewModel.errorMessage.collect { errorMessage ->
+                            viewBinding?.errorText?.text = errorMessage
+                        }
+                    }
                 }
             }
-        })
+        }
     }
 
     private fun setUpAdapter() {
         viewBinding?.searchRecyclerView?.layoutManager = LinearLayoutManager(activity)
         searchAdapter = SearchAdapter { repoItem ->
-            mainViewModel.goToDetailsFragment(
-                RepoDetailsArgument(
-                    repoItem.users.username,
-                    repoItem.repoName
+            lifecycleScope.launch {
+                mainViewModel.goToDetailsFragment(
+                    RepoDetailsArgument(
+                        repoItem.users.username,
+                        repoItem.repoName
+                    )
                 )
-            )
+            }
         }
         viewBinding?.searchRecyclerView?.adapter = searchAdapter
     }
@@ -151,13 +156,6 @@ class SearchFragment : Fragment() {
     }
 
     private fun registerNetworkCallback() {
-        val connectivityManager =
-            appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
-        val builder = NetworkRequest.Builder()
-        builder.addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-
-        val networkRequest = builder.build()
         connectivityManager.registerNetworkCallback(networkRequest,
             object : ConnectivityManager.NetworkCallback() {
                 override fun onAvailable(network: Network) {

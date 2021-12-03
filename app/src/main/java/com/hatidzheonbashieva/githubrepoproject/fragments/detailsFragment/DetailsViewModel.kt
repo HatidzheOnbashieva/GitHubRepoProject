@@ -7,6 +7,8 @@ import com.hatidzheonbashieva.githubrepoproject.searchRepository.SearchRepositor
 import com.hatidzheonbashieva.githubrepoproject.searchRepository.StarredRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -20,8 +22,8 @@ class DetailsViewModel @Inject constructor(
 
     //val arguments: MutableLiveData<RepoDetailsArgument> = MutableLiveData()
 
-    val arguments: MutableLiveData<Repos> = MutableLiveData()
-    val errorMessage: MutableLiveData<String> = MutableLiveData()
+    val arguments: MutableSharedFlow<Repos> = MutableSharedFlow()
+    val errorMessage: MutableSharedFlow<String> = MutableSharedFlow()
 
     init {
         val savedArguments = savedStateHandle.get<RepoDetailsArgument>("argument")
@@ -33,29 +35,29 @@ class DetailsViewModel @Inject constructor(
     private fun setRepos(userName: String, repoName: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                arguments.postValue(searchRepository.getRepos(userName, repoName))
+                arguments.emit(searchRepository.getRepos(userName, repoName))
 
             } catch (ex: HttpException) {
                 when (ex.code()) {
                     301 -> {
-                        arguments.postValue(Repos())
-                        errorMessage.postValue("Moved Permanently")
+                        arguments.emit(Repos())
+                        errorMessage.emit("Moved Permanently")
                     }
                     403 -> {
-                        arguments.postValue(Repos())
-                        errorMessage.postValue("Forbidden - API rate limit exceeded")
+                        arguments.emit(Repos())
+                        errorMessage.emit("Forbidden - API rate limit exceeded")
                     }
                     404 -> {
-                        arguments.postValue(Repos())
-                        errorMessage.postValue("Not Found")
+                        arguments.emit(Repos())
+                        errorMessage.emit("Not Found")
                     }
                     500 -> {
-                        arguments.postValue(Repos())
-                        errorMessage.postValue("Internal Server Error")
+                        arguments.emit(Repos())
+                        errorMessage.emit("Internal Server Error")
                     }
                     else -> {
-                        arguments.postValue(Repos())
-                        errorMessage.postValue("Unknown Error")
+                        arguments.emit(Repos())
+                        errorMessage.emit("Unknown Error")
                     }
                 }
             }
@@ -68,7 +70,7 @@ class DetailsViewModel @Inject constructor(
         }
     }
 
-    fun getRepoId(repoId: Int): LiveData<Boolean> = starredRepository.getRepoId(repoId)
+    fun getRepoId(repoId: Int): Flow<Boolean> = starredRepository.getRepoId(repoId)
 
 
     fun deleteRepoId(repoId: Int) {

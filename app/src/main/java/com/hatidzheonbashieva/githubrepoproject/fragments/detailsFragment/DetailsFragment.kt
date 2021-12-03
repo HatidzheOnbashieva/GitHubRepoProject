@@ -8,12 +8,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.hatidzheonbashieva.githubrepoproject.R
 import com.hatidzheonbashieva.githubrepoproject.database.RepoEntity
 import com.hatidzheonbashieva.githubrepoproject.databinding.FragmentDetailsBinding
 import com.hatidzheonbashieva.githubrepoproject.utils.trimDate
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class DetailsFragment : Fragment() {
@@ -38,30 +41,37 @@ class DetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.arguments.observe(viewLifecycleOwner, { repo ->
-            if (repo.id == 0) {
-                viewModel.errorMessage.observe(viewLifecycleOwner, { errorMessage ->
-                    viewBinding?.errorText?.visibility = View.VISIBLE
-                    viewBinding?.errorText?.text = errorMessage
-                })
-            } else {
-                repoEntity = RepoEntity(
-                    repo.id,
-                    repo.repoName,
-                    repo.users.username,
-                    repo.users.avatarUrl,
-                    repo.description,
-                    repo.language,
-                    repo.dateCreated,
-                    repo.url
-                )
-
-                viewModel.getRepoId(repo.id).observe(viewLifecycleOwner, {
-                    if (it) {
-                        favouriteFlag = true
-                        viewBinding?.favourite?.setImageResource(R.drawable.ic_filled_star)
+        lifecycleScope.launch {
+            viewModel.arguments.collect{ repo ->
+                if (repo.id == 0) {
+                    lifecycleScope.launch {
+                        viewModel.errorMessage.collect { errorMessage ->
+                            viewBinding?.errorText?.visibility = View.VISIBLE
+                            viewBinding?.errorText?.text = errorMessage
+                        }
                     }
-                })
+                } else {
+                    repoEntity = RepoEntity(
+                        repo.id,
+                        repo.repoName,
+                        repo.users.username,
+                        repo.users.avatarUrl,
+                        repo.description,
+                        repo.language,
+                        repo.dateCreated,
+                        repo.url
+                    )
+        }
+
+                lifecycleScope.launch {
+                    viewModel.getRepoId(repo.id).collect { state ->
+                        if (state) {
+                            favouriteFlag = true
+                            viewBinding?.favourite?.setImageResource(R.drawable.ic_filled_star)
+                        }
+                    }
+                }
+
 
                 Picasso.get().load(repo.users.avatarUrl).into(viewBinding?.profileImage)
                 viewBinding?.username?.text = repo.users.username
@@ -75,7 +85,7 @@ class DetailsFragment : Fragment() {
                     startActivity(followUrl)
                 }
             }
-        })
+        }
 
         goBack()
 

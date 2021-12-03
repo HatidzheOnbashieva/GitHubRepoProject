@@ -1,18 +1,22 @@
 package com.hatidzheonbashieva.githubrepoproject
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.lifecycleScope
 import com.hatidzheonbashieva.githubrepoproject.databinding.ActivityMainBinding
 import com.hatidzheonbashieva.githubrepoproject.fragments.detailsFragment.DetailsFragment
 import com.hatidzheonbashieva.githubrepoproject.fragments.detailsFragment.RepoDetailsArgument
 import com.hatidzheonbashieva.githubrepoproject.fragments.searchFragment.SearchFragment
 import com.hatidzheonbashieva.githubrepoproject.fragments.starredFragment.StarredFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -39,17 +43,21 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        mainViewModel.arguments.observe(this, {
-            goToDetailsFragment(it)
-        })
-
-        mainViewModel.loader.observe(this, { state ->
-            if (state) {
-                hideProgressBar()
-            } else {
-                showProgressBar()
+        lifecycleScope.launch {
+            mainViewModel.arguments.collect { argument ->
+                goToDetailsFragment(argument)
             }
-        })
+        }
+
+        lifecycleScope.launch{
+            mainViewModel.loader.collect{ state ->
+                if (state) {
+                    hideProgressBar()
+                } else {
+                    showProgressBar()
+                }
+            }
+        }
     }
 
     private fun goToDetailsFragment(argument: RepoDetailsArgument) {
