@@ -66,10 +66,12 @@ class StarredFragment : Fragment() {
 
         registerNetworkCallback()
 
-        lifecycleScope.launch {
-            viewModel.getAllRepos().collect{ repoEntity ->
-                updateRepoList(repoEntity)
-                newList = repoEntity
+        viewLifecycleOwner.lifecycleScope.launch {
+            lifecycleScope.launch {
+                viewModel.getAllRepos().collect { repoEntity ->
+                    updateRepoList(repoEntity)
+                    newList = repoEntity
+                }
             }
         }
     }

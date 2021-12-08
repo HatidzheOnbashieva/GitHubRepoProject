@@ -1,6 +1,5 @@
 package com.hatidzheonbashieva.githubrepoproject
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hatidzheonbashieva.githubrepoproject.fragments.detailsFragment.RepoDetailsArgument

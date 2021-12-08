@@ -18,5 +18,5 @@ interface RepoDao {
     suspend fun addRepo(repos: RepoEntity)
 
     @Query("SELECT EXISTS(SELECT * FROM repository WHERE repoId = :repoId)")
-    fun getRepoId(repoId: Int): Flow<Boolean>
+    suspend fun getRepoId(repoId: Int): Boolean
 }

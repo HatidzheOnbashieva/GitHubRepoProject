@@ -64,27 +64,29 @@ class SearchFragment : Fragment() {
 
         registerNetworkCallback()
 
-        lifecycleScope.launch {
-            viewModel.userRepos.collect { repoList ->
-                if (repoList.isNotEmpty()) {
-                    mainViewModel.showHideProgressBar(true)
-                    viewBinding?.errorText?.visibility = View.INVISIBLE
-                    viewBinding?.searchRecyclerView?.visibility = View.VISIBLE
-                    updateRepoList(repoList)
-
-                } else {
-                    lifecycleScope.launch {
-                        delay(3000)
+//        viewLifecycleOwner.lifecycleScope.launch {
+            lifecycleScope.launch {
+                viewModel.userRepos.collect { repoList ->
+                    if (repoList.isNotEmpty()) {
                         mainViewModel.showHideProgressBar(true)
-                        viewBinding?.searchRecyclerView?.visibility = View.INVISIBLE
-                        viewBinding?.errorText?.visibility = View.VISIBLE
+                        viewBinding?.errorText?.visibility = View.INVISIBLE
+                        viewBinding?.searchRecyclerView?.visibility = View.VISIBLE
+                        updateRepoList(repoList)
 
-                        viewModel.errorMessage.collect { errorMessage ->
-                            viewBinding?.errorText?.text = errorMessage
+                    } else {
+                        lifecycleScope.launch {
+                            delay(3000)
+                            mainViewModel.showHideProgressBar(true)
+                            viewBinding?.searchRecyclerView?.visibility = View.INVISIBLE
+                            viewBinding?.errorText?.visibility = View.VISIBLE
+
+                            viewModel.errorMessage.collect { errorMessage ->
+                                viewBinding?.errorText?.text = errorMessage
+                            }
                         }
                     }
                 }
-            }
+//            }
         }
     }
 

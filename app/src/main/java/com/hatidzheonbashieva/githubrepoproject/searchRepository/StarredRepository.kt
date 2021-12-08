@@ -11,7 +11,7 @@ class StarredRepository @Inject constructor(private val repoDao: RepoDao) {
 
     fun getAllRepos(): Flow<List<RepoEntity>> = repoDao.getRepos()
 
-    fun getRepoId(repoID: Int): Flow<Boolean> = repoDao.getRepoId(repoID)
+    suspend fun getRepoId(repoID: Int): Boolean = repoDao.getRepoId(repoID)
 
     suspend fun addRepo(repo: RepoEntity) {
         repoDao.addRepo(repo)
