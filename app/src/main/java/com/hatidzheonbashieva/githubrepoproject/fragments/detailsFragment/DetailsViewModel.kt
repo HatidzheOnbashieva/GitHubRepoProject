@@ -1,16 +1,15 @@
 package com.hatidzheonbashieva.githubrepoproject.fragments.detailsFragment
 
-import androidx.lifecycle.*
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.hatidzheonbashieva.githubrepoproject.database.RepoEntity
 import com.hatidzheonbashieva.githubrepoproject.model.Repos
 import com.hatidzheonbashieva.githubrepoproject.searchRepository.SearchRepository
 import com.hatidzheonbashieva.githubrepoproject.searchRepository.StarredRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -42,23 +41,18 @@ class DetailsViewModel @Inject constructor(
             } catch (ex: HttpException) {
                 when (ex.code()) {
                     301 -> {
-//                        arguments.emit(Repos())
                         errorMessage.emit("Moved Permanently")
                     }
                     403 -> {
-//                        arguments.emit(Repos())
                         errorMessage.emit("Forbidden - API rate limit exceeded")
                     }
                     404 -> {
-//                        arguments.emit(Repos())
                         errorMessage.emit("Not Found")
                     }
                     500 -> {
-//                        arguments.emit(Repos())
                         errorMessage.emit("Internal Server Error")
                     }
                     else -> {
-//                        arguments.emit(Repos())
                         errorMessage.emit("Unknown Error")
                     }
                 }
@@ -79,6 +73,7 @@ class DetailsViewModel @Inject constructor(
             starredRepository.deleteRepo(repoId)
         }
     }
+
 
 //     fun execute(callback: suspend CoroutineScope.() -> Unit){
 //        viewModelScope.launch(Dispatchers.IO) {

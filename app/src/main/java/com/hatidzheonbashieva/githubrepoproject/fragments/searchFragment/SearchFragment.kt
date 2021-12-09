@@ -14,7 +14,9 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hatidzheonbashieva.githubrepoproject.MainViewModel
 import com.hatidzheonbashieva.githubrepoproject.R
@@ -64,29 +66,35 @@ class SearchFragment : Fragment() {
 
         registerNetworkCallback()
 
-//        viewLifecycleOwner.lifecycleScope.launch {
-            lifecycleScope.launch {
-                viewModel.userRepos.collect { repoList ->
-                    if (repoList.isNotEmpty()) {
-                        mainViewModel.showHideProgressBar(true)
-                        viewBinding?.errorText?.visibility = View.INVISIBLE
-                        viewBinding?.searchRecyclerView?.visibility = View.VISIBLE
-                        updateRepoList(repoList)
+        viewLifecycleOwner.lifecycleScope.launch {
+           repeatOnLifecycle(Lifecycle.State.STARTED) {
+               launch {
+                   viewModel.userRepos.collect { repoList ->
+                       if (repoList.isNotEmpty()) {
+                           mainViewModel.showHideProgressBar(true)
+                           viewBinding?.errorText?.visibility = View.INVISIBLE
+                           viewBinding?.searchRecyclerView?.visibility = View.VISIBLE
+                           updateRepoList(repoList)
 
-                    } else {
-                        lifecycleScope.launch {
-                            delay(3000)
-                            mainViewModel.showHideProgressBar(true)
-                            viewBinding?.searchRecyclerView?.visibility = View.INVISIBLE
-                            viewBinding?.errorText?.visibility = View.VISIBLE
+                       } else {
+                           lifecycleScope.launch {
+                               delay(3000)
+                               mainViewModel.showHideProgressBar(true)
+                               viewBinding?.searchRecyclerView?.visibility = View.INVISIBLE
+                               viewBinding?.errorText?.visibility = View.VISIBLE
 
-                            viewModel.errorMessage.collect { errorMessage ->
-                                viewBinding?.errorText?.text = errorMessage
-                            }
-                        }
-                    }
-                }
-//            }
+                           }
+                       }
+                   }
+               }
+
+               launch {
+                   viewModel.errorMessage.collect { errorMessage ->
+                       viewBinding?.errorText?.visibility = View.VISIBLE
+                       viewBinding?.errorText?.text = errorMessage
+                   }
+               }
+           }
         }
     }
 
